@@ -25,13 +25,16 @@ function selectBoxes(initialBox, currentBox, puzzle) {
     const length = puzzle[currentCol].length;
     const height = puzzle.length;
 
-    puzzle[currentRow].map(box =>
-      (box.col >= currentCol && box.col <= initialCol) ||
-      (box.col <= currentCol && box.col >= initialCol)
-        ? (box.selected = true)
-        : (box.selected = false)
-    );
-    if (currentRow === initialRow || currentCol === initialCol) {
+    if (currentRow === initialRow) {
+      console.log("hey");
+      puzzle[currentRow].map(box =>
+        (box.col >= currentCol && box.col <= initialCol) ||
+        (box.col <= currentCol && box.col >= initialCol)
+          ? (box.selected = true)
+          : (box.selected = false)
+      );
+    }
+    if (currentCol === initialCol) {
       for (var i = 0; i < height; i++) {
         let box = puzzle[i][initialCol];
 
@@ -67,99 +70,25 @@ function selectBoxes(initialBox, currentBox, puzzle) {
   }
 }
 
-function checkEligibile(currentBox, initialBox, puzzle) {
+function withinRange(min, max, number) {
+  return number >= min && number <= max ? true : false;
+}
+
+function checkEligibile(current, initial, puzzle) {
   const length = puzzle[0].length;
   const height = puzzle.length;
-  const matrix = [
-    {
-      // direction: horizontal,
-      row: { min: initialBox.row, max: initialBox.row },
-      col: { min: 0, max: length - 1 },
-    },
-    {
-      // direction: vertical,
-      row: { min: 0, max: height - 1 },
-      col: { min: initialBox.col, max: initialBox.col },
-    },
-  ];
 
-  if (currentBox.row === initialBox.row || currentBox.col === initialBox.col) {
-    for (let option of matrix) {
-      if (
-        currentBox.row >= option.row.min &&
-        currentBox.row <= option.row.max &&
-        currentBox.col >= option.col.min &&
-        currentBox.col <= option.col.max
-      ) {
-        return true;
-      }
-    }
-  }
+  const horizontal =
+    current.row === initial.row && withinRange(0, length - 1, current.col);
 
-  const diagonalMatrix =
-    // {
-    //   name: "top right",
-    //   row: { min: 0, max: initialBox.row - 1 },
-    //   col: { min: initialBox.col + 1, max: initialBox.row + initialBox.col },
-    //   third:
-    //     currentBox.row + currentBox.col === initialBox.row + initialBox.col,
-    // },
-    // {
-    //   name: "bottom right",
-    //   row: { min: initialBox.row + 1, max: height - 1 },
-    //   col: { min: initialBox.col + 1, max: length - 1 },
-    //   third:
-    //     currentBox.row - currentBox.col === initialBox.row - initialBox.col,
-    // },
-    // {
-    //   name: "top left",
-    //   row: { min: initialBox.row - initialBox.col, max: initialBox.row - 1 },
-    //   col: { min: 0, max: initialBox.col - 1 },
-    //   third:
-    //     currentBox.row - currentBox.col === initialBox.row - initialBox.col,
-    // },
-    // {
-    //   name: "bottom left",
-    //   row: {
-    //     min: initialBox.row + 1,
-    //     max: initialBox.row + initialBox.col,
-    //   },
-    //   col: { min: 0, max: initialBox.col - 1 },
-    //   third:
-    //     currentBox.row + currentBox.col === initialBox.row + initialBox.col,
-    // },
-    {
-      name: "topleft to bottomright",
-      row: {
-        min: initialBox.row - initialBox.col,
-        max: initialBox.row + (currentBox.row - initialBox.row),
-      },
-      col: { min: 0, max: initialBox.col + (currentBox.col - initialBox.col) },
-      third:
-        currentBox.row + currentBox.col === initialBox.row + initialBox.col ||
-        currentBox.row - currentBox.col === initialBox.row - initialBox.col,
-    };
+  const vertical =
+    current.col === initial.col && withinRange(0, height - 1, current.row);
 
-  function withinRange(min, max, number) {
-    return number >= min && number <= max ? true : false;
-  }
+  const diagonal =
+    current.row + current.col === initial.row + initial.col ||
+    current.row - current.col === initial.row - initial.col;
 
-  if (
-    withinRange(
-      diagonalMatrix.row.min,
-      diagonalMatrix.row.max,
-      currentBox.row
-    ) &&
-    withinRange(
-      diagonalMatrix.col.min,
-      diagonalMatrix.col.max,
-      currentBox.col
-    ) &&
-    diagonalMatrix.third
-  ) {
-    console.log(diagonalMatrix.name);
-    return true;
-  }
+  return horizontal || vertical || diagonal ? true : false;
 }
 
 function PuzzleContainer({ completePuzzle, wordsList }) {
@@ -175,11 +104,16 @@ function PuzzleContainer({ completePuzzle, wordsList }) {
   function handleHighlightBoxes(box) {
     if (initialBox) {
       let eligible = checkEligibile(box, initialBox, completePuzzle);
-      eligible ? eligibleBoxes(box) : notEligibleBoxes();
+      if (eligible) {
+        setCurrentBox(box);
+        box.selected = true;
+      }
+      // eligible ? eligibleBoxes(box) : notEligibleBoxes();
     }
   }
   function eligibleBoxes(box) {
     setCurrentBox(box);
+
     selectBoxes(initialBox, box, completePuzzle);
   }
   function notEligibleBoxes() {
