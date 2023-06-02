@@ -28,7 +28,7 @@ function isValidPosition(puzzleGrid, word, orientation) {
     // ------------------------------------
     // CHECK IF THE POSITION IS WITHIN THE GRID BOUNDS:
     // ------------------------------------
-    // if the position is not within the grid bounds?
+    // is the position  not within the grid bounds?
     const outsideGrid =
       newRow < 0 ||
       newRow >= gridSize.rows ||
@@ -123,10 +123,24 @@ function placeWords(grid, gridSize, words) {
 function addMissingLetters(grid) {
   const randomLetter = () => Math.floor(Math.random() * letters.length);
 
-  return grid.map(row =>
+  return grid.map((row, rowIndex) =>
     row.map(
-      letter =>
-        letter === "." ? (letter = letters[randomLetter()]) : (letter = letter)
+      (letter, columnIndex) =>
+        letter === "."
+          ? (letter = {
+              letter: `${rowIndex}, ${columnIndex}`,
+              // letter: letters[randomLetter()],
+              selected: false,
+              row: rowIndex,
+              col: columnIndex,
+            })
+          : (letter = {
+              letter: `${rowIndex}, ${columnIndex}`,
+              // letter: letter,
+              selected: false,
+              row: rowIndex,
+              col: columnIndex,
+            })
       //   letter === "." ? (letter = "--") : (letter = letter)
     )
   );
@@ -141,7 +155,7 @@ function organizeWordsList(wordsList) {
   // sort by length (long to short)
   wordsList.sort((a, b) => b.length - a.length);
   //   two dimensional array for individual letters in each word i.e ['happy'] --> [['h','a', 'p', 'p', 'y']]
-  return wordsList.map(word => Array.from(word.toUpperCase()));
+  return wordsList.map(word => Array.from(word.word.toUpperCase()));
 }
 
 // ------------------------------------
@@ -158,6 +172,7 @@ export default function generatePuzzle(wordsList, gridSize) {
     .map(() => Array(gridSize.columns).fill("."));
 
   placeWords(puzzleGrid, gridSize, words);
+
   const completePuzzle = addMissingLetters(puzzleGrid);
 
   return completePuzzle;

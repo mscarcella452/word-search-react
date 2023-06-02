@@ -1,7 +1,9 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import { useToggle } from "../customHooks";
-import { Box, Typography } from "@mui/material";
+import { Box, TextareaAutosize, Typography } from "@mui/material";
 import { words, matrix } from "./data";
+import { keyframes } from "@mui/material";
+import { dispatchContext, gameContext } from "../Context/WordSearchProvider";
 
 const flexBoxSx = {
   display: "flex",
@@ -11,28 +13,108 @@ const flexBoxSx = {
   width: 1,
 };
 
-function LetterBox({ selectWord, unselectWord, index, children }) {
-  const [selected, toggleSelected] = useToggle(false);
+function LetterBox({ grid, box, setWord, setInitialBox, highlightBoxes }) {
+  const game = useContext(gameContext);
+  const dispatch = useContext(dispatchContext);
+  const [selected, setSelected] = useState(box.selected);
 
-  useEffect(() => {
-    selected ? selectWord(children, index) : unselectWord(children, index);
-  }, [selected]);
+  // useEffect(() => {
+  //   selected ? selectWord(children, index) : unselectWord(children, index);
+  // }, [selected]);
+
+  function handleClick() {
+    setInitialBox(box);
+    // if (game.box1.length === 0) {
+    //   box.selected = true;
+    //   dispatch({ type: "initial_box", box1: box });
+    //   /* dispatch({ type: "selected_letters", letter: letter }); */
+    //   /* push initial letter to front of selected on second click */
+    // } else {
+    //   checkWord();
+    //   // game.box1.selected = false;
+    // }
+  }
+
+  function handleMouseOver() {
+    // if (game.box1) {
+    //   // toggleSelected();
+    //   // box.selected = true;
+    //   dispatch({ type: "direction", box2: box });
+    //   /* dispatch({ type: "selected_letters", letter: letter }); */
+    // }
+    // setCurrentBox(box);
+    highlightBoxes(box);
+    // select();
+    // setSelected(state);
+  }
+
+  function checkWord() {
+    let checkWord = "";
+    grid.map(row => row.map(box => box.selected && (checkWord += box.letter)));
+
+    dispatch({ type: "submit-word", word: checkWord });
+  }
 
   return (
     <Box
-      onClick={toggleSelected}
+      onClick={handleClick}
+      onMouseOver={handleMouseOver}
+      // onMouseUp={handleMouseUp}
       sx={{
         ...flexBoxSx,
         border: "1px solid black",
         padding: ".5rem",
-        width: "40px",
+        width: "70px",
+        // width: "40px",
         height: "40px",
-        fontSize: "1.5rem",
-        background: selected ? "green" : "transparent",
+        fontSize: "1.25rem",
+        // fontSize: "1.5rem",
         cursor: "pointer",
+        position: "relative",
+        zIndex: 2,
+        backgroundColor: selected && "teal",
+
+        // "&:hover": {
+        //   backgroundColor: "teal",
+        // },
+
+        "&::before": {
+          content: '""',
+
+          backgroundImage:
+            selected &&
+            "url('https://www.transparenttextures.com/patterns/noise-lines.png')",
+
+          position: "absolute",
+          width: "100%",
+          height: selected ? "100%" : 0,
+          /* height: locked ? .5 : 1, */
+          transition: "all 1s ease",
+          /* overflow: "hidden", */
+          // transform: !selected
+          //   ? "skew(-10deg) translateX(-100%)"
+          //   : "skew(0) translateX(0)",
+
+          /* animation: selected && `${bounce} 1s ease`, */
+          top: 0,
+          bottom: 0,
+          left: 0,
+          right: 0,
+          zIndex: -1,
+          "@keyframes createBox": {
+            "0%": {
+              opacity: 0,
+              transform: "translateY(-200%)",
+            },
+            "100%": {
+              opacity: 1,
+              transform: "translateY(0)",
+            },
+          },
+        },
       }}
     >
-      {children}
+      {box.letter}
     </Box>
   );
 }
