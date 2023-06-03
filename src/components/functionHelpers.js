@@ -128,15 +128,15 @@ function addMissingLetters(grid) {
       (letter, columnIndex) =>
         letter === "."
           ? (letter = {
-              letter: `${rowIndex}, ${columnIndex}`,
-              // letter: letters[randomLetter()],
+              // letter: `${rowIndex}, ${columnIndex}`,
+              letter: letters[randomLetter()],
               selected: false,
               row: rowIndex,
               col: columnIndex,
             })
           : (letter = {
-              letter: `${rowIndex}, ${columnIndex}`,
-              // letter: letter,
+              // letter: `${rowIndex}, ${columnIndex}`,
+              letter: letter,
               selected: false,
               row: rowIndex,
               col: columnIndex,

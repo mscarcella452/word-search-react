@@ -15,63 +15,78 @@ const flexBoxSx = {
   width: 1,
 };
 
-function selectBoxes(initialBox, currentBox, puzzle) {
-  if (initialBox && currentBox) {
-    const currentRow = currentBox.row;
-    const currentCol = currentBox.col;
-    const initialRow = initialBox.row;
-    const initialCol = initialBox.col;
+function withinRange(min, max, number) {
+  return number >= min && number <= max ? true : false;
+}
 
-    const length = puzzle[currentCol].length;
-    const height = puzzle.length;
+function checkDiagonal(initial, current, box) {
+  const diagonalOptions = [
+    {
+      // name: "topLeft",
+      row: { min: current.row, max: initial.row },
+      col: { min: current.col, max: initial.col },
+    },
+    {
+      // name: "topRight",
+      row: { min: current.row, max: initial.row },
+      col: { min: initial.col, max: current.col },
+    },
+    {
+      // name: "bottomLeft",
+      row: { min: initial.row, max: current.row },
+      col: { min: current.col, max: initial.col },
+    },
+    {
+      // name: "bottomRight",
+      row: { min: initial.row, max: current.row },
+      col: { min: initial.col, max: current.col },
+    },
+  ];
 
-    if (currentRow === initialRow) {
-      console.log("hey");
-      puzzle[currentRow].map(box =>
-        (box.col >= currentCol && box.col <= initialCol) ||
-        (box.col <= currentCol && box.col >= initialCol)
+  for (let option of diagonalOptions) {
+    if (
+      withinRange(option.row.min, option.row.max, box.row) &&
+      withinRange(option.col.min, option.col.max, box.col)
+    ) {
+      return true;
+    }
+  }
+}
+
+function selectBoxes(initial, current, puzzle) {
+  if (initial && current) {
+    puzzle.map(row =>
+      row.map(box =>
+        checkDiagonal(initial, current, box) &&
+        (box.row + box.col === initial.row + initial.col ||
+          box.row - box.col === initial.row - initial.col)
+          ? (box.selected = true)
+          : (box.selected = false)
+      )
+    );
+
+    // ------------------
+
+    if (current.row === initial.row) {
+      puzzle[current.row].map(box =>
+        (box.col >= current.col && box.col <= initial.col) ||
+        (box.col <= current.col && box.col >= initial.col)
           ? (box.selected = true)
           : (box.selected = false)
       );
     }
-    if (currentCol === initialCol) {
-      for (var i = 0; i < height; i++) {
-        let box = puzzle[i][initialCol];
+    // ------------------
+    if (current.col === initial.col) {
+      for (var i = 0; i < puzzle.length; i++) {
+        let box = puzzle[i][initial.col];
 
-        if (
-          (box.row >= currentRow && box.row <= initialRow) ||
-          (box.row <= currentRow && box.row >= initialRow)
-        ) {
-          puzzle[i][initialCol].selected = true;
-        } else puzzle[i][initialCol].selected = false;
+        (box.row >= current.row && box.row <= initial.row) ||
+        (box.row <= current.row && box.row >= initial.row)
+          ? (box.selected = true)
+          : (box.selected = false);
       }
     }
-
-    // if (currentRow === initialRow) {
-    //   puzzle[currentRow].map(box =>
-    //     (box.col >= currentCol && box.col <= initialCol) ||
-    //     (box.col <= currentCol && box.col >= initialCol)
-    //       ? (box.selected = true)
-    //       : (box.selected = false)
-    //   );
-    // }
-    // if (currentCol === initialCol) {
-    //   for (var i = 0; i < height; i++) {
-    //     let box = puzzle[i][initialCol];
-
-    //     if (
-    //       (box.row >= currentRow && box.row <= initialRow) ||
-    //       (box.row <= currentRow && box.row >= initialRow)
-    //     ) {
-    //       puzzle[i][initialCol].selected = true;
-    //     } else puzzle[i][initialCol].selected = false;
-    //   }
-    // }
   }
-}
-
-function withinRange(min, max, number) {
-  return number >= min && number <= max ? true : false;
 }
 
 function checkEligibile(current, initial, puzzle) {
@@ -96,32 +111,22 @@ function PuzzleContainer({ completePuzzle, wordsList }) {
   const [initialBox, setInitialBox] = useState();
   const [currentBox, setCurrentBox] = useState();
 
-  function handleInitialBox(box) {
-    setInitialBox(box);
-    box.selected = true;
-  }
+  const handleInitialBox = box => setInitialBox(box);
 
-  function handleHighlightBoxes(box) {
-    if (initialBox) {
-      let eligible = checkEligibile(box, initialBox, completePuzzle);
-      if (eligible) {
-        setCurrentBox(box);
-        box.selected = true;
+  const handleHighlightBoxes = box => initialBox && highlight(box);
+
+  function highlight(box) {
+    let eligible = checkEligibile(box, initialBox, completePuzzle);
+    if (eligible) {
+      setCurrentBox(box);
+      selectBoxes(initialBox, box, completePuzzle);
+    } else {
+      if (currentBox) {
+        setTimeout(() => setCurrentBox(""), 100);
+        completePuzzle.map(row =>
+          row.map(box => (box !== initialBox ? (box.selected = false) : null))
+        );
       }
-      // eligible ? eligibleBoxes(box) : notEligibleBoxes();
-    }
-  }
-  function eligibleBoxes(box) {
-    setCurrentBox(box);
-
-    selectBoxes(initialBox, box, completePuzzle);
-  }
-  function notEligibleBoxes() {
-    if (currentBox) {
-      setCurrentBox("");
-      completePuzzle.map(row =>
-        row.map(box => (box !== initialBox ? (box.selected = false) : null))
-      );
     }
   }
 
@@ -134,7 +139,7 @@ function PuzzleContainer({ completePuzzle, wordsList }) {
         // marginTop: "5rem",
       }}
     >
-      {completePuzzle.map((row, rowIndex) => (
+      {completePuzzle.map(row => (
         <Box
           key={uuidv4()}
           sx={{
@@ -143,13 +148,10 @@ function PuzzleContainer({ completePuzzle, wordsList }) {
             height: "fit-content",
           }}
         >
-          {row.map((box, columnIndex) => (
+          {row.map(box => (
             <LetterBox
               key={uuidv4()}
               box={box}
-              // select={() => selectBoxes(initialBox, currentBox, completePuzzle)}
-              grid={completePuzzle}
-              setWord={setWord}
               setInitialBox={handleInitialBox}
               highlightBoxes={handleHighlightBoxes}
             />
