@@ -1,6 +1,6 @@
-import { useContext } from "react";
+import { useState, useContext } from "react";
 import { Box, Typography } from "@mui/material";
-import { gameContext } from "../Context/WordSearchProvider";
+import { gameContext, dispatchContext } from "../Context/WordSearchProvider";
 
 const flexBoxSx = {
   display: "flex",
@@ -10,8 +10,29 @@ const flexBoxSx = {
   width: 1,
 };
 
-function WordList() {
+function WordList({ wordsList }) {
+  // const [foundWord, setFoundWord] = useState();
   const game = useContext(gameContext);
+  const dispatch = useContext(dispatchContext);
+
+  function updateWordsList() {
+    wordsList.map(word => {
+      if (word.word.toUpperCase() === game.selected.word.toUpperCase()) {
+        word.found = true;
+        game.selected.boxes.map(box => (box.found = true));
+        console.log(game.selected.boxes);
+
+        // dispatch({
+        //   type: "found_words",
+        //   foundWord: game.selected.word,
+        // });
+      }
+    });
+  }
+
+  updateWordsList();
+
+  // console.log(game.found);
 
   return (
     <Box
@@ -23,7 +44,7 @@ function WordList() {
         justifyContent: "space-around",
       }}
     >
-      {game.wordsList.map(word => (
+      {wordsList.map(word => (
         <Typography sx={{ textDecoration: word.found && "line-through" }}>
           {word.word}
         </Typography>

@@ -5,10 +5,11 @@ export const dispatchContext = createContext();
 
 const ACTIONS = {
   FOUND_WORDS: "found_words",
-  SELECTED_LETTERS: "selected_letters",
-  INITIAL_BOX: "initial_box",
-  DIRECTION: "direction",
-  SUBMIT_WORD: "submit-word",
+  SELECTED_WORD: "selected_word",
+  // SELECTED_LETTERS: "selected_letters",
+  // INITIAL_BOX: "initial_box",
+  // DIRECTION: "direction",
+  // SUBMIT_WORD: "submit-word",
 };
 
 function setDirection(box1, box2) {
@@ -29,57 +30,65 @@ function setDirection(box1, box2) {
   }
 }
 
+const initialValue = {
+  found: [],
+  selected: { word: "", boxes: [] },
+  // box1: "",
+  // direction: "",
+  // wordsList: wordsList,
+};
+
 const wordsReducer = (game, action) => {
   switch (action.type) {
     case ACTIONS.FOUND_WORDS:
       return {
         ...game,
-        found: [...game.found, action.selected],
+        selected: { word: "", boxes: [] },
+        found: [...game.found, action.foundWord],
       };
-    case ACTIONS.SELECTED_LETTERS:
+    case ACTIONS.SELECTED_WORD:
+      // action.selected.map(box => console.log(box.letter));
       return {
         ...game,
-        selected: [...game.selected, action.letter],
+        selected: { word: action.word, boxes: [...action.boxes] },
       };
-    case ACTIONS.INITIAL_BOX:
-      return {
-        ...game,
-        box1: action.box1,
-      };
-    case ACTIONS.DIRECTION:
-      let direction = setDirection(game.box1, action.box2);
+    // case ACTIONS.SELECTED_LETTERS:
+    //   return {
+    //     ...game,
+    //     selected: [...game.selected, action.letter],
+    //   };
+    // case ACTIONS.INITIAL_BOX:
+    //   return {
+    //     ...game,
+    //     box1: action.box1,
+    //   };
+    // case ACTIONS.DIRECTION:
+    //   let direction = setDirection(game.box1, action.box2);
 
-      // if (box1.x === box2.x) {
-      // }
-      return {
-        ...game,
-        direction: direction,
-      };
-    case ACTIONS.SUBMIT_WORD:
-      console.log(action.word);
-      let checkWords = game.wordsList.map(word =>
-        word.word.toLowerCase() === action.word.toLowerCase()
-          ? (word = { ...word, found: true })
-          : (word = { ...word, found: false })
-      );
-      console.log(checkWords);
-      return {
-        ...game,
-        wordsList: checkWords,
-      };
+    //   // if (box1.x === box2.x) {
+    //   // }
+    //   return {
+    //     ...game,
+    //     direction: direction,
+    //   };
+    // case ACTIONS.SUBMIT_WORD:
+    //   console.log(action.word);
+    //   let checkWords = game.wordsList.map(word =>
+    //     word.word.toLowerCase() === action.word.toLowerCase()
+    //       ? (word = { ...word, found: true })
+    //       : (word = { ...word, found: false })
+    //   );
+    //   console.log(checkWords);
+    //   return {
+    //     ...game,
+    //     wordsList: checkWords,
+    //   };
 
     default:
       throw new Error(`Unknown action type: ${action.type}`);
   }
 };
 function WordSearchProvider({ wordsList, children }) {
-  const initialValue = {
-    found: [],
-    selected: "",
-    box1: "",
-    direction: "",
-    wordsList: wordsList,
-  };
   const [game, gameDispatch] = useReducer(wordsReducer, initialValue);
   return (
     <dispatchContext.Provider value={gameDispatch}>

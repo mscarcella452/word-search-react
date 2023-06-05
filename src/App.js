@@ -31,6 +31,9 @@ const words = [
 const gridSize = { rows: 15, columns: 10 };
 
 function App() {
+  const [currentWord, setCurrentWord] = useState([]);
+  const [foundWords, setFoundWords] = useState([]);
+
   const wordsList = words.map(
     eachWord =>
       (eachWord = {
@@ -38,12 +41,16 @@ function App() {
         found: false,
       })
   );
+
   const completePuzzle = generatePuzzle(wordsList, gridSize);
   return (
     <Box sx={flexBoxSx}>
-      <WordSearchProvider wordsList={wordsList}>
-        <WordList />
-        <PuzzleContainer completePuzzle={completePuzzle} />
+      <WordSearchProvider>
+        <WordList wordsList={wordsList} />
+        <PuzzleContainer
+          completePuzzle={completePuzzle}
+          setCurrentWord={setCurrentWord}
+        />
       </WordSearchProvider>
     </Box>
   );

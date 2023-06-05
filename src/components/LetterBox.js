@@ -13,27 +13,21 @@ const flexBoxSx = {
   width: 1,
 };
 
-function LetterBox({ grid, box, setWord, setInitialBox, highlightBoxes }) {
+function LetterBox({
+  grid,
+  box,
+  handleClickLetter,
+  highlightBoxes,
+  initialBox,
+}) {
   const game = useContext(gameContext);
   const dispatch = useContext(dispatchContext);
   const [selected, setSelected] = useState(box.selected);
+  const [found, setFound] = useState(box.found);
 
   // useEffect(() => {
   //   selected ? selectWord(children, index) : unselectWord(children, index);
   // }, [selected]);
-
-  function handleClick() {
-    setInitialBox(box);
-    // if (game.box1.length === 0) {
-    //   box.selected = true;
-    //   dispatch({ type: "initial_box", box1: box });
-    //   /* dispatch({ type: "selected_letters", letter: letter }); */
-    //   /* push initial letter to front of selected on second click */
-    // } else {
-    //   checkWord();
-    //   // game.box1.selected = false;
-    // }
-  }
 
   function handleMouseOver() {
     // if (game.box1) {
@@ -46,6 +40,9 @@ function LetterBox({ grid, box, setWord, setInitialBox, highlightBoxes }) {
     highlightBoxes(box);
     // select();
     // setSelected(state);
+  }
+  function handleClick() {
+    handleClickLetter(box);
   }
 
   function checkWord() {
@@ -72,11 +69,11 @@ function LetterBox({ grid, box, setWord, setInitialBox, highlightBoxes }) {
         cursor: "pointer",
         position: "relative",
         zIndex: 2,
-        backgroundColor: selected && "teal",
+        backgroundColor: selected ? "teal" : found ? "red" : "transparent",
 
-        // "&:hover": {
-        //   backgroundColor: "teal",
-        // },
+        "&:hover": {
+          backgroundColor: !initialBox && !found && "teal",
+        },
 
         "&::before": {
           content: '""',

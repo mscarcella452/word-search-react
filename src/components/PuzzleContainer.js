@@ -5,7 +5,7 @@ import LetterBox from "./LetterBox";
 import generatePuzzle from "./functionHelpers";
 import { v4 as uuidv4 } from "uuid";
 import WordList from "./WordList";
-import WordSearchProvider from "../Context/WordSearchProvider";
+import { dispatchContext, gameContext } from "../Context/WordSearchProvider";
 
 const flexBoxSx = {
   display: "flex",
@@ -106,12 +106,23 @@ function checkEligibile(current, initial, puzzle) {
   return horizontal || vertical || diagonal ? true : false;
 }
 
-function PuzzleContainer({ completePuzzle, wordsList }) {
+function PuzzleContainer({ completePuzzle, setCurrentWord }) {
+  const dispatch = useContext(dispatchContext);
   const [word, setWord] = useState([]);
   const [initialBox, setInitialBox] = useState();
   const [currentBox, setCurrentBox] = useState();
 
-  const handleInitialBox = box => setInitialBox(box);
+  const handleClickLetter = box =>
+    !initialBox ? setInitialBox(box) : setFoundWord();
+
+  const handleReset = () => {
+    if (initialBox) {
+      setInitialBox();
+      completePuzzle.map(row =>
+        row.map(box => (box.selected === true ? (box.selected = false) : null))
+      );
+    }
+  };
 
   const handleHighlightBoxes = box => initialBox && highlight(box);
 
@@ -130,11 +141,63 @@ function PuzzleContainer({ completePuzzle, wordsList }) {
     }
   }
 
+  function setFoundWord() {
+    // dispatch({ type: "selected_word", selected: "" });
+    let selectedBoxes = [];
+
+    completePuzzle.map(row =>
+      row.map(box => {
+        if (box.selected === true) {
+          selectedBoxes.push(box);
+        }
+      })
+    );
+
+    const sameRow = initialBox.row === selectedBoxes[1].row;
+    const sameCol = initialBox.col === selectedBoxes[1].col;
+    const initialColLess = initialBox.col < selectedBoxes[1].col;
+    const initialColMore = initialBox.col > selectedBoxes[1].col;
+    const initialRowLess = initialBox.row < selectedBoxes[1].row;
+    let direction;
+    // SET DIRECTION OF WORD
+    if (sameRow) {
+      direction = initialColLess ? "right" : "left";
+    } else if (sameCol) {
+      direction = initialRowLess ? "down" : "up";
+    } else if (initialColMore) {
+      direction = initialRowLess ? "downLeft" : "upLeft";
+    } else if (initialColLess) {
+      direction = initialRowLess ? "downRight" : "upRight";
+    }
+
+    // REORDER DIRECTION OF ARRAY SO INITIAL LETTER IS FIRST
+    const reorderDirection = ["left", "up", "upLeft", "upRight"];
+
+    reorderDirection.forEach(option => {
+      direction === option && selectedBoxes.reverse();
+    });
+
+    // turn selectedBoxes array into selected word string
+    let selectedWord = "";
+    selectedBoxes.map(box => (selectedWord += box.letter));
+
+    dispatch({
+      type: "selected_word",
+      word: selectedWord,
+      boxes: selectedBoxes,
+    });
+    handleReset();
+  }
+
   return (
     <Box
+      onMouseLeave={handleReset}
       sx={{
         ...flexBoxSx,
+        width: "fit-content",
+        height: "fit-content",
         flexDirection: "column",
+        border: "1px solid blue",
         // gap: "1rem",
         // marginTop: "5rem",
       }}
@@ -144,6 +207,7 @@ function PuzzleContainer({ completePuzzle, wordsList }) {
           key={uuidv4()}
           sx={{
             ...flexBoxSx,
+
             width: "fit-content",
             height: "fit-content",
           }}
@@ -152,8 +216,9 @@ function PuzzleContainer({ completePuzzle, wordsList }) {
             <LetterBox
               key={uuidv4()}
               box={box}
-              setInitialBox={handleInitialBox}
+              initialBox={initialBox}
               highlightBoxes={handleHighlightBoxes}
+              handleClickLetter={handleClickLetter}
             />
           ))}
         </Box>
