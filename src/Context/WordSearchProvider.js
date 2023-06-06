@@ -44,7 +44,7 @@ const wordsReducer = (game, action) => {
       return {
         ...game,
         selected: { word: "", boxes: [] },
-        found: [...game.found, action.foundWord],
+        found: action.foundWords,
       };
     case ACTIONS.SELECTED_WORD:
       // action.selected.map(box => console.log(box.letter));

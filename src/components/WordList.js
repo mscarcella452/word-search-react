@@ -1,6 +1,7 @@
-import { useState, useContext } from "react";
+import { useContext } from "react";
 import { Box, Typography } from "@mui/material";
-import { gameContext, dispatchContext } from "../Context/WordSearchProvider";
+import { gameContext } from "../Context/WordSearchProvider";
+import { v4 as uuidv4 } from "uuid";
 
 const flexBoxSx = {
   display: "flex",
@@ -11,21 +12,13 @@ const flexBoxSx = {
 };
 
 function WordList({ wordsList }) {
-  // const [foundWord, setFoundWord] = useState();
   const game = useContext(gameContext);
-  const dispatch = useContext(dispatchContext);
 
   function updateWordsList() {
     wordsList.map(word => {
       if (word.word.toUpperCase() === game.selected.word.toUpperCase()) {
         word.found = true;
         game.selected.boxes.map(box => (box.found = true));
-        console.log(game.selected.boxes);
-
-        // dispatch({
-        //   type: "found_words",
-        //   foundWord: game.selected.word,
-        // });
       }
     });
   }
@@ -45,7 +38,10 @@ function WordList({ wordsList }) {
       }}
     >
       {wordsList.map(word => (
-        <Typography sx={{ textDecoration: word.found && "line-through" }}>
+        <Typography
+          key={uuidv4()}
+          sx={{ textDecoration: word.found && "line-through" }}
+        >
           {word.word}
         </Typography>
       ))}

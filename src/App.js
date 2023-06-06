@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useToggle } from "./customHooks";
 import { Box, Typography } from "@mui/material";
 import PuzzleContainer from "./components/PuzzleContainer";
-import generatePuzzle from "./components/functionHelpers";
+import generatePuzzle from "./functions/generatePuzzle";
 import WordSearchProvider from "./Context/WordSearchProvider";
 import WordList from "./components/WordList";
 import "./App.css";

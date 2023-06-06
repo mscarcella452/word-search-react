@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef, useContext } from "react";
 import { useToggle } from "../customHooks";
 import { Box, TextareaAutosize, Typography } from "@mui/material";
-import { words, matrix } from "./data";
 import { keyframes } from "@mui/material";
 import { dispatchContext, gameContext } from "../Context/WordSearchProvider";
 
@@ -23,6 +22,7 @@ function LetterBox({
   const game = useContext(gameContext);
   const dispatch = useContext(dispatchContext);
   const [selected, setSelected] = useState(box.selected);
+  const [fail, setFail] = useState(box.fail);
   const [found, setFound] = useState(box.found);
 
   // useEffect(() => {
@@ -70,6 +70,7 @@ function LetterBox({
         position: "relative",
         zIndex: 2,
         backgroundColor: selected ? "teal" : found ? "red" : "transparent",
+        textDecoration: fail && "line-through",
 
         "&:hover": {
           backgroundColor: !initialBox && !found && "teal",

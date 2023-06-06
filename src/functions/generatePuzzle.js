@@ -1,4 +1,4 @@
-import { directions, letters } from "./data";
+import { directions, letters } from "../data";
 
 // ------------------------------------
 // ------------------------------------
@@ -133,6 +133,7 @@ function addMissingLetters(grid) {
               // letter: letters[randomLetter()],
               selected: false,
               found: false,
+              fail: false,
               row: rowIndex,
               col: columnIndex,
             })
@@ -141,6 +142,7 @@ function addMissingLetters(grid) {
               letter: letter,
               selected: false,
               found: false,
+              fail: false,
               row: rowIndex,
               col: columnIndex,
             })
