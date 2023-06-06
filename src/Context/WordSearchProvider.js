@@ -6,6 +6,7 @@ export const dispatchContext = createContext();
 const ACTIONS = {
   FOUND_WORDS: "found_words",
   SELECTED_WORD: "selected_word",
+
   // SELECTED_LETTERS: "selected_letters",
   // INITIAL_BOX: "initial_box",
   // DIRECTION: "direction",
@@ -52,6 +53,7 @@ const wordsReducer = (game, action) => {
         ...game,
         selected: { word: action.word, boxes: [...action.boxes] },
       };
+
     // case ACTIONS.SELECTED_LETTERS:
     //   return {
     //     ...game,

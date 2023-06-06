@@ -28,7 +28,7 @@ const words = [
   // "xd",
 ];
 
-const gridSize = { rows: 15, columns: 10 };
+const gridSize = { rows: 10, columns: 14 };
 
 function App() {
   const [currentWord, setCurrentWord] = useState([]);
@@ -41,6 +41,13 @@ function App() {
         found: false,
       })
   );
+  // const wordsList = words.map(
+  //   eachWord =>
+  //     (eachWord = {
+  //       word: eachWord,
+  //       found: false,
+  //     })
+  // );
 
   const completePuzzle = generatePuzzle(wordsList, gridSize);
   return (
@@ -49,6 +56,7 @@ function App() {
         <WordList wordsList={wordsList} />
         <PuzzleContainer
           completePuzzle={completePuzzle}
+          wordsList={wordsList}
           setCurrentWord={setCurrentWord}
         />
       </WordSearchProvider>

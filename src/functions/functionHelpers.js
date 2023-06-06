@@ -1,4 +1,4 @@
-function withinRange(min, max, number) {
+export function withinRange(min, max, number) {
   return number >= min && number <= max ? true : false;
 }
 // ------------------------------------------------------------
@@ -108,33 +108,35 @@ export function organizeSelectedWord(initial, puzzle) {
     })
   );
 
-  const sameRow = initial.row === selectedBoxes[1].row;
-  const sameCol = initial.col === selectedBoxes[1].col;
-  const initialColLess = initial.col < selectedBoxes[1].col;
-  const initialColMore = initial.col > selectedBoxes[1].col;
-  const initialRowLess = initial.row < selectedBoxes[1].row;
-  let direction;
-  // SET DIRECTION OF WORD
-  if (sameRow) {
-    direction = initialColLess ? "right" : "left";
-  } else if (sameCol) {
-    direction = initialRowLess ? "down" : "up";
-  } else if (initialColMore) {
-    direction = initialRowLess ? "downLeft" : "upLeft";
-  } else if (initialColLess) {
-    direction = initialRowLess ? "downRight" : "upRight";
-  }
+  if (selectedBoxes.length > 1) {
+    const sameRow = initial.row === selectedBoxes[1].row;
+    const sameCol = initial.col === selectedBoxes[1].col;
+    const initialColLess = initial.col < selectedBoxes[1].col;
+    const initialColMore = initial.col > selectedBoxes[1].col;
+    const initialRowLess = initial.row < selectedBoxes[1].row;
+    let direction;
+    // SET DIRECTION OF WORD
+    if (sameRow) {
+      direction = initialColLess ? "right" : "left";
+    } else if (sameCol) {
+      direction = initialRowLess ? "down" : "up";
+    } else if (initialColMore) {
+      direction = initialRowLess ? "downLeft" : "upLeft";
+    } else if (initialColLess) {
+      direction = initialRowLess ? "downRight" : "upRight";
+    }
 
-  // REORDER DIRECTION OF ARRAY SO INITIAL LETTER IS FIRST
-  const reorderDirection = ["left", "up", "upLeft", "upRight"];
+    // REORDER DIRECTION OF ARRAY SO INITIAL LETTER IS FIRST
+    const reorderDirection = ["left", "up", "upLeft", "upRight"];
 
-  reorderDirection.forEach(option => {
-    direction === option && selectedBoxes.reverse();
-  });
+    reorderDirection.forEach(option => {
+      direction === option && selectedBoxes.reverse();
+    });
 
-  // turn selectedBoxes array into selected word string
-  let word = "";
-  selectedBoxes.map(box => (word += box.letter));
+    // turn selectedBoxes array into selected word string
+    let word = "";
+    selectedBoxes.map(box => (word += box.letter));
 
-  return { word, selectedBoxes };
+    return { word, selectedBoxes };
+  } else return false;
 }

@@ -1,5 +1,5 @@
 import { useState, useContext } from "react";
-import { Box, Typography, keyframes } from "@mui/material";
+import { Box } from "@mui/material";
 import LetterBox from "./LetterBox";
 import {
   checkEligibile,
@@ -17,7 +17,7 @@ const flexBoxSx = {
   width: 1,
 };
 
-function PuzzleContainer({ completePuzzle }) {
+function PuzzleContainer({ completePuzzle, wordsList }) {
   const dispatch = useContext(dispatchContext);
   const [initialBox, setInitialBox] = useState();
   const [currentBox, setCurrentBox] = useState();
@@ -54,11 +54,13 @@ function PuzzleContainer({ completePuzzle }) {
   function submitSelectedWord() {
     let selectedWord = organizeSelectedWord(initialBox, completePuzzle);
 
-    dispatch({
-      type: "selected_word",
-      word: selectedWord.word,
-      boxes: selectedWord.selectedBoxes,
-    });
+    selectedWord &&
+      dispatch({
+        type: "selected_word",
+        word: selectedWord.word,
+        boxes: selectedWord.selectedBoxes,
+      });
+
     clearInitialBox();
   }
 
@@ -70,9 +72,9 @@ function PuzzleContainer({ completePuzzle }) {
         width: "fit-content",
         height: "fit-content",
         flexDirection: "column",
-        border: "1px solid blue",
-        // gap: "1rem",
-        // marginTop: "5rem",
+        backgroundColor: "teal",
+        backgroundImage:
+          "url('https://www.transparenttextures.com/patterns/noise-lines.png')",
       }}
     >
       {completePuzzle.map(row => (
@@ -80,9 +82,10 @@ function PuzzleContainer({ completePuzzle }) {
           key={uuidv4()}
           sx={{
             ...flexBoxSx,
-
             width: "fit-content",
             height: "fit-content",
+            maxWidth: 1,
+            maxHeight: 1,
           }}
         >
           {row.map(box => (
@@ -91,7 +94,7 @@ function PuzzleContainer({ completePuzzle }) {
               box={box}
               initialBox={initialBox}
               highlightBoxes={handleHighlightBoxes}
-              handleClickLetter={handleClickLetter}
+              clickLetter={handleClickLetter}
             />
           ))}
         </Box>

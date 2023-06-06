@@ -1,4 +1,5 @@
 import { directions, letters } from "../data";
+import { withinRange } from "./functionHelpers";
 
 // ------------------------------------
 // ------------------------------------
@@ -34,6 +35,7 @@ function isValidPosition(puzzleGrid, word, orientation) {
       newRow >= gridSize.rows ||
       newCol < 0 ||
       newCol >= gridSize.columns;
+
     // positions before the first letter and after the last letter?
     const notLetterIndex = i < 0 || i >= word.length;
 
@@ -48,15 +50,16 @@ function isValidPosition(puzzleGrid, word, orientation) {
     }
 
     // ------------------------------------
-    // CHECK IF THE BOX IS EMPTY:
+    // CHECK IF THE BOX IS EMPTY
     // ------------------------------------
     // is the box empty?
     const emptyBox = grid[newRow][newCol] === ".";
-    // does the box contains the same character as the word?
-    // const duplicateLetter = grid[newRow][newCol] !== word[i];
-    const takenBox = i >= 0 && i < word.length && !emptyBox; // && duplicateLetter
+    // // does the box contains the same character as the word?
+    const duplicateLetter = grid[newRow][newCol] === word[i];
 
-    if (takenBox) return false;
+    const takenBox = i >= 0 && i < word.length && !emptyBox;
+
+    if (takenBox && !duplicateLetter) return false;
 
     // ------------------------------------
     // CHECK FOR THE EMPTY SPACE BETWEEN THE WORDS:
@@ -134,6 +137,7 @@ function addMissingLetters(grid) {
               selected: false,
               found: false,
               fail: false,
+              locked: false,
               row: rowIndex,
               col: columnIndex,
             })
@@ -143,6 +147,7 @@ function addMissingLetters(grid) {
               selected: false,
               found: false,
               fail: false,
+              locked: false,
               row: rowIndex,
               col: columnIndex,
             })

@@ -1,8 +1,5 @@
-import { useState, useEffect, useRef, useContext } from "react";
-import { useToggle } from "../customHooks";
-import { Box, TextareaAutosize, Typography } from "@mui/material";
-import { keyframes } from "@mui/material";
-import { dispatchContext, gameContext } from "../Context/WordSearchProvider";
+// import { useState, useEffect, useRef, useContext } from "react";
+import { Box } from "@mui/material";
 
 const flexBoxSx = {
   display: "flex",
@@ -12,109 +9,113 @@ const flexBoxSx = {
   width: 1,
 };
 
-function LetterBox({
-  grid,
-  box,
-  handleClickLetter,
-  highlightBoxes,
-  initialBox,
-}) {
-  const game = useContext(gameContext);
-  const dispatch = useContext(dispatchContext);
-  const [selected, setSelected] = useState(box.selected);
-  const [fail, setFail] = useState(box.fail);
-  const [found, setFound] = useState(box.found);
+function LetterBox({ box, clickLetter, highlightBoxes, initialBox }) {
+  // const [selected, setSelected] = useState(box.selected);
+  // const [fail, setFail] = useState(box.fail);
+  // const [found, setFound] = useState(box.found);
+  // const [locked, setLocked] = useState(box.locked);
 
-  // useEffect(() => {
-  //   selected ? selectWord(children, index) : unselectWord(children, index);
-  // }, [selected]);
+  const handleMouseOver = () => highlightBoxes(box);
 
-  function handleMouseOver() {
-    // if (game.box1) {
-    //   // toggleSelected();
-    //   // box.selected = true;
-    //   dispatch({ type: "direction", box2: box });
-    //   /* dispatch({ type: "selected_letters", letter: letter }); */
-    // }
-    // setCurrentBox(box);
-    highlightBoxes(box);
-    // select();
-    // setSelected(state);
-  }
-  function handleClick() {
-    handleClickLetter(box);
-  }
-
-  function checkWord() {
-    let checkWord = "";
-    grid.map(row => row.map(box => box.selected && (checkWord += box.letter)));
-
-    dispatch({ type: "submit-word", word: checkWord });
-  }
+  const handleClick = () => clickLetter(box);
 
   return (
     <Box
       onClick={handleClick}
       onMouseOver={handleMouseOver}
-      // onMouseUp={handleMouseUp}
       sx={{
         ...flexBoxSx,
-        border: "1px solid black",
-        padding: ".5rem",
-        width: "70px",
-        // width: "40px",
-        height: "40px",
+        borderRadius: "5px",
+        margin: ".25rem",
+        width: "50px",
+        height: "50px",
         fontSize: "1.25rem",
-        // fontSize: "1.5rem",
         cursor: "pointer",
         position: "relative",
         zIndex: 2,
-        backgroundColor: selected ? "teal" : found ? "red" : "transparent",
-        textDecoration: fail && "line-through",
-
+        border: box.selected
+          ? "2px solid teal"
+          : box.found
+          ? "1px solid white"
+          : "none",
+        color: box.selected || box.found ? "white" : "black",
+        backgroundColor: box.selected
+          ? "transparent"
+          : box.found
+          ? "green"
+          : "white",
+        fontWeight: box.found || (box.selected && "bold"),
+        // textDecoration: fail && "line-through",
+        backgroundImage:
+          box.found &&
+          "url('https://www.transparenttextures.com/patterns/noise-lines.png')",
         "&:hover": {
-          backgroundColor: !initialBox && !found && "teal",
+          transition: "all .1s ease",
+          color: !initialBox && "white",
+          backgroundColor: !initialBox && "transparent",
+          fontWeight: !initialBox && "bold",
+          border: !initialBox && "2px solid teal",
         },
 
-        "&::before": {
-          content: '""',
-
-          backgroundImage:
-            selected &&
-            "url('https://www.transparenttextures.com/patterns/noise-lines.png')",
-
-          position: "absolute",
-          width: "100%",
-          height: selected ? "100%" : 0,
-          /* height: locked ? .5 : 1, */
-          transition: "all 1s ease",
-          /* overflow: "hidden", */
-          // transform: !selected
-          //   ? "skew(-10deg) translateX(-100%)"
-          //   : "skew(0) translateX(0)",
-
-          /* animation: selected && `${bounce} 1s ease`, */
-          top: 0,
-          bottom: 0,
-          left: 0,
-          right: 0,
-          zIndex: -1,
-          "@keyframes createBox": {
-            "0%": {
-              opacity: 0,
-              transform: "translateY(-200%)",
-            },
-            "100%": {
-              opacity: 1,
-              transform: "translateY(0)",
-            },
-          },
-        },
+        transition: "all .5s ease",
+        animation: box.fail
+          ? "fail 1.5s ease-in"
+          : !box.locked && box.found
+          ? "found 1.5s ease-in"
+          : "none",
+        "@keyframes fail": animationSx("red"),
+        "@keyframes found": animationSx("green"),
       }}
     >
       {box.letter}
     </Box>
   );
+}
+
+const keyFramesSx = {
+  default: {
+    backgroundImage:
+      "url('https://www.transparenttextures.com/patterns/noise-lines.png')",
+    fontWeight: "bold",
+    color: "white",
+    border: "2px solid transparent",
+    borderRadius: "50%",
+    zIndex: 10,
+    backgroundColor: "transparent",
+  },
+  transform: {
+    start: "translate(-5px, 0)",
+    quarter: "translate(0, -5px)",
+    half: "translate(5px, 0)",
+    threeFourth: "translate(0, 5px)",
+    end: "translate(0)",
+  },
+};
+
+function animationSx(color) {
+  return {
+    "0%": {
+      ...keyFramesSx.default,
+      transform: keyFramesSx.transform.start,
+    },
+
+    "25%": {
+      transform: keyFramesSx.transform.quarter,
+    },
+    "50%": {
+      transform: keyFramesSx.transform.half,
+      backgroundColor: color,
+    },
+    "75%": {
+      ...keyFramesSx.default,
+      transform: keyFramesSx.transform.threeFourth,
+      backgroundColor: color,
+    },
+
+    "100%": {
+      transform: keyFramesSx.transform.end,
+    },
+  };
 }
 
 export default LetterBox;
