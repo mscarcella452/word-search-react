@@ -1,15 +1,9 @@
-// import { useState, useEffect, useRef, useContext } from "react";
+import { useContext } from "react";
 import { Box } from "@mui/material";
-
-const flexBoxSx = {
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-  height: 1,
-  width: 1,
-};
+import { letterBoxContext } from "../Context/StylesProvider";
 
 function LetterBox({ box, clickLetter, highlightBoxes, initialBox }) {
+  const letterBoxSx = useContext(letterBoxContext);
   const handleMouseOver = () => highlightBoxes(box);
 
   const handleClick = () => clickLetter(box);
@@ -19,54 +13,20 @@ function LetterBox({ box, clickLetter, highlightBoxes, initialBox }) {
       onClick={handleClick}
       onMouseOver={handleMouseOver}
       sx={{
-        ...flexBoxSx,
-
-        boxShadow: box.selected
-          ? "none"
-          : // : box.found
-            // ? "none"
-            ".5px -.5px 2px inset black",
-        borderRadius: "5px",
-        margin: "3px",
-        width: "50px",
-        height: "50px",
-        fontSize: "1.25rem",
-        cursor: "pointer",
-        position: "relative",
-        zIndex: 2,
-        border: box.selected
-          ? "2px solid teal"
-          : box.found
-          ? "2px solid green"
-          : "none",
-        color: box.selected || box.found ? "white" : "black",
-        backgroundColor: box.selected
-          ? "transparent"
-          : box.found
-          ? "green"
-          : "white",
-        fontWeight: (box.found || box.selected) && "bold",
-        // textDecoration: fail && "line-through",
-        backgroundImage:
-          box.found &&
-          "url('https://www.transparenttextures.com/patterns/noise-lines.png')",
+        ...letterBoxSx.unselectedBoxes,
+        ...(box.selected && letterBoxSx.selectedBoxes),
+        ...(box.found && letterBoxSx.foundBoxes),
         "&:hover": {
-          boxShadow: "none",
-          transition: "all .25s ease",
-          color: !initialBox && "white",
-          backgroundColor: !initialBox && "transparent",
-          fontWeight: !initialBox && "bold",
-          border: !initialBox && "2px solid teal",
+          ...(!initialBox && letterBoxSx.hover),
         },
 
-        transition: "all .5s ease-out",
         animation: box.fail
           ? "fail 1.5s ease-out"
           : !box.locked && box.found
           ? "found 1.5s ease-out"
           : "none",
-        "@keyframes fail": animationSx("red"),
-        "@keyframes found": animationSx("green"),
+        "@keyframes fail": animationSx("fail.main", "fail.color"),
+        "@keyframes found": animationSx("foundWord.main", "foundWord.color"),
       }}
     >
       {box.letter}
@@ -94,7 +54,7 @@ const keyFramesSx = {
   },
 };
 
-function animationSx(color) {
+function animationSx(background, fontColor) {
   return {
     "0%": {
       ...keyFramesSx.default,
@@ -106,18 +66,18 @@ function animationSx(color) {
     },
     "50%": {
       transform: keyFramesSx.transform.half,
-      backgroundColor: color,
+      backgroundColor: background,
+      color: fontColor,
     },
     "75%": {
       ...keyFramesSx.default,
       transform: keyFramesSx.transform.threeFourth,
-      backgroundColor: color,
+      backgroundColor: background,
+      color: fontColor,
     },
 
     "100%": {
       transform: keyFramesSx.transform.end,
-      // backgroundColor: color,
-      // color: "white",
     },
   };
 }

@@ -3,28 +3,11 @@ import { Box, Typography } from "@mui/material";
 import { gameContext } from "../Context/WordSearchProvider";
 import { v4 as uuidv4 } from "uuid";
 
-const flexBoxSx = {
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-  height: 1,
-  width: 1,
-};
-
-function WordList() {
+function WordList({ wordListStylesProp }) {
   const game = useContext(gameContext);
 
   return (
-    <Box
-      sx={{
-        ...flexBoxSx,
-        width: 1,
-        height: "5rem",
-        background: "gray",
-        justifyContent: "space-around",
-        textTransform: "uppercase",
-      }}
-    >
+    <Box sx={{ ...wordsListContainerSx, ...wordListStylesProp }}>
       {game.wordsList.map(word => (
         <Typography
           key={uuidv4()}
@@ -38,3 +21,17 @@ function WordList() {
 }
 
 export default WordList;
+
+const wordsListContainerSx = {
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "center",
+  alignItems: "center",
+  width: "1",
+  minWidth: "300px",
+  height: 1,
+
+  justifyContent: "space-around",
+  textTransform: "uppercase",
+  background: "Red",
+};

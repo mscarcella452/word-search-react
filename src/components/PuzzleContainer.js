@@ -10,15 +10,7 @@ import {
 import { v4 as uuidv4 } from "uuid";
 import { dispatchContext, gameContext } from "../Context/WordSearchProvider";
 
-const flexBoxSx = {
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-  height: 1,
-  width: 1,
-};
-
-function PuzzleContainer({ completePuzzle }) {
+function PuzzleContainer({ completePuzzle, puzzleContainerStylesProp }) {
   const game = useContext(gameContext);
   const dispatch = useContext(dispatchContext);
   const [initialBox, setInitialBox] = useState();
@@ -54,8 +46,6 @@ function PuzzleContainer({ completePuzzle }) {
   }
 
   function submitSelectedWord() {
-    // let selectedWord = organizeSelectedWord(initialBox, completePuzzle);
-
     const updatedWordsList = updateWordsList(
       game.wordsList,
       initialBox,
@@ -77,29 +67,12 @@ function PuzzleContainer({ completePuzzle }) {
     <Box
       onMouseLeave={handleClearInitialBox}
       sx={{
-        ...flexBoxSx,
-        width: "fit-content",
-        height: "fit-content",
-        flexDirection: "column",
-        backgroundColor: "teal",
-        // padding === letter box margin
-        padding: "3px",
-        borderRadius: "0 0 5px 5px",
-        backgroundImage:
-          "url('https://www.transparenttextures.com/patterns/noise-lines.png')",
+        ...puzzleContainerSx,
+        ...puzzleContainerStylesProp,
       }}
     >
       {completePuzzle.map(row => (
-        <Box
-          key={uuidv4()}
-          sx={{
-            ...flexBoxSx,
-            width: "fit-content",
-            height: "fit-content",
-            maxWidth: 1,
-            maxHeight: 1,
-          }}
-        >
+        <Box key={uuidv4()} sx={puzzleRowSx}>
           {row.map(box => (
             <LetterBox
               key={uuidv4()}
@@ -116,3 +89,30 @@ function PuzzleContainer({ completePuzzle }) {
 }
 
 export default PuzzleContainer;
+
+const puzzleContainerSx = {
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  width: "fit-content",
+  height: "fit-content",
+  flexDirection: "column",
+  backgroundColor: "primary.main",
+  // padding === letter box margin
+  padding: "3px",
+  borderRadius: "5px",
+  backgroundImage:
+    "url('https://www.transparenttextures.com/patterns/noise-lines.png')",
+  boxShadow: "1px 1px 3px black",
+  zIndex: 5,
+};
+
+const puzzleRowSx = {
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  width: "fit-content",
+  height: "fit-content",
+  maxWidth: 1,
+  maxHeight: 1,
+};
