@@ -10,11 +10,6 @@ const flexBoxSx = {
 };
 
 function LetterBox({ box, clickLetter, highlightBoxes, initialBox }) {
-  // const [selected, setSelected] = useState(box.selected);
-  // const [fail, setFail] = useState(box.fail);
-  // const [found, setFound] = useState(box.found);
-  // const [locked, setLocked] = useState(box.locked);
-
   const handleMouseOver = () => highlightBoxes(box);
 
   const handleClick = () => clickLetter(box);
@@ -25,8 +20,14 @@ function LetterBox({ box, clickLetter, highlightBoxes, initialBox }) {
       onMouseOver={handleMouseOver}
       sx={{
         ...flexBoxSx,
+
+        boxShadow: box.selected
+          ? "none"
+          : // : box.found
+            // ? "none"
+            ".5px -.5px 2px inset black",
         borderRadius: "5px",
-        margin: ".25rem",
+        margin: "3px",
         width: "50px",
         height: "50px",
         fontSize: "1.25rem",
@@ -36,7 +37,7 @@ function LetterBox({ box, clickLetter, highlightBoxes, initialBox }) {
         border: box.selected
           ? "2px solid teal"
           : box.found
-          ? "1px solid white"
+          ? "2px solid green"
           : "none",
         color: box.selected || box.found ? "white" : "black",
         backgroundColor: box.selected
@@ -44,24 +45,25 @@ function LetterBox({ box, clickLetter, highlightBoxes, initialBox }) {
           : box.found
           ? "green"
           : "white",
-        fontWeight: box.found || (box.selected && "bold"),
+        fontWeight: (box.found || box.selected) && "bold",
         // textDecoration: fail && "line-through",
         backgroundImage:
           box.found &&
           "url('https://www.transparenttextures.com/patterns/noise-lines.png')",
         "&:hover": {
-          transition: "all .1s ease",
+          boxShadow: "none",
+          transition: "all .25s ease",
           color: !initialBox && "white",
           backgroundColor: !initialBox && "transparent",
           fontWeight: !initialBox && "bold",
           border: !initialBox && "2px solid teal",
         },
 
-        transition: "all .5s ease",
+        transition: "all .5s ease-out",
         animation: box.fail
-          ? "fail 1.5s ease-in"
+          ? "fail 1.5s ease-out"
           : !box.locked && box.found
-          ? "found 1.5s ease-in"
+          ? "found 1.5s ease-out"
           : "none",
         "@keyframes fail": animationSx("red"),
         "@keyframes found": animationSx("green"),
@@ -79,7 +81,7 @@ const keyFramesSx = {
     fontWeight: "bold",
     color: "white",
     border: "2px solid transparent",
-    borderRadius: "50%",
+    // borderRadius: "50%",
     zIndex: 10,
     backgroundColor: "transparent",
   },
@@ -114,6 +116,8 @@ function animationSx(color) {
 
     "100%": {
       transform: keyFramesSx.transform.end,
+      // backgroundColor: color,
+      // color: "white",
     },
   };
 }

@@ -6,6 +6,7 @@ export const dispatchContext = createContext();
 const ACTIONS = {
   FOUND_WORDS: "found_words",
   SELECTED_WORD: "selected_word",
+  UPDATE_WORDSLIST: "update_WordsList",
 
   // SELECTED_LETTERS: "selected_letters",
   // INITIAL_BOX: "initial_box",
@@ -31,14 +32,6 @@ function setDirection(box1, box2) {
   }
 }
 
-const initialValue = {
-  found: [],
-  selected: { word: "", boxes: [] },
-  // box1: "",
-  // direction: "",
-  // wordsList: wordsList,
-};
-
 const wordsReducer = (game, action) => {
   switch (action.type) {
     case ACTIONS.FOUND_WORDS:
@@ -52,6 +45,12 @@ const wordsReducer = (game, action) => {
       return {
         ...game,
         selected: { word: action.word, boxes: [...action.boxes] },
+      };
+    case ACTIONS.UPDATE_WORDSLIST:
+      // action.selected.map(box => console.log(box.letter));
+      return {
+        ...game,
+        wordsList: action.updatedWordsList,
       };
 
     // case ACTIONS.SELECTED_LETTERS:
@@ -90,8 +89,23 @@ const wordsReducer = (game, action) => {
       throw new Error(`Unknown action type: ${action.type}`);
   }
 };
-function WordSearchProvider({ wordsList, children }) {
+function WordSearchProvider({ words, children }) {
+  const wordsList = words.map(
+    eachWord =>
+      (eachWord = {
+        word: eachWord,
+        found: false,
+      })
+  );
+  const initialValue = {
+    found: [],
+    selected: { word: "", boxes: [] },
+    // box1: "",
+    // direction: "",
+    wordsList: wordsList,
+  };
   const [game, gameDispatch] = useReducer(wordsReducer, initialValue);
+
   return (
     <dispatchContext.Provider value={gameDispatch}>
       <gameContext.Provider value={game}>{children}</gameContext.Provider>

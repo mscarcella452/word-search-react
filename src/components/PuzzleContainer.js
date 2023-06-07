@@ -5,6 +5,7 @@ import {
   checkEligibile,
   selectBoxes,
   organizeSelectedWord,
+  updateWordsList,
 } from "../functions/functionHelpers";
 import { v4 as uuidv4 } from "uuid";
 import { dispatchContext, gameContext } from "../Context/WordSearchProvider";
@@ -17,7 +18,8 @@ const flexBoxSx = {
   width: 1,
 };
 
-function PuzzleContainer({ completePuzzle, wordsList }) {
+function PuzzleContainer({ completePuzzle }) {
+  const game = useContext(gameContext);
   const dispatch = useContext(dispatchContext);
   const [initialBox, setInitialBox] = useState();
   const [currentBox, setCurrentBox] = useState();
@@ -25,7 +27,7 @@ function PuzzleContainer({ completePuzzle, wordsList }) {
   const handleClickLetter = box =>
     !initialBox ? setInitialBox(box) : submitSelectedWord();
 
-  const clearInitialBox = () => {
+  const handleClearInitialBox = () => {
     if (initialBox) {
       setInitialBox();
       completePuzzle.map(row =>
@@ -52,27 +54,37 @@ function PuzzleContainer({ completePuzzle, wordsList }) {
   }
 
   function submitSelectedWord() {
-    let selectedWord = organizeSelectedWord(initialBox, completePuzzle);
+    // let selectedWord = organizeSelectedWord(initialBox, completePuzzle);
 
-    selectedWord &&
-      dispatch({
-        type: "selected_word",
-        word: selectedWord.word,
-        boxes: selectedWord.selectedBoxes,
-      });
+    const updatedWordsList = updateWordsList(
+      game.wordsList,
+      initialBox,
+      completePuzzle
+    );
 
-    clearInitialBox();
+    updatedWordsList &&
+      setTimeout(() => {
+        dispatch({
+          type: "update_WordsList",
+          updatedWordsList: updatedWordsList,
+        });
+      }, 1500);
+
+    handleClearInitialBox();
   }
 
   return (
     <Box
-      onMouseLeave={clearInitialBox}
+      onMouseLeave={handleClearInitialBox}
       sx={{
         ...flexBoxSx,
         width: "fit-content",
         height: "fit-content",
         flexDirection: "column",
         backgroundColor: "teal",
+        // padding === letter box margin
+        padding: "3px",
+        borderRadius: "0 0 5px 5px",
         backgroundImage:
           "url('https://www.transparenttextures.com/patterns/noise-lines.png')",
       }}

@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useToggle } from "./customHooks";
 import { Box, Typography } from "@mui/material";
 import PuzzleContainer from "./components/PuzzleContainer";
-import generatePuzzle from "./functions/generatePuzzle";
+import { generatePuzzle, organizeWordsList } from "./functions/generatePuzzle";
 import WordSearchProvider from "./Context/WordSearchProvider";
 import WordList from "./components/WordList";
 import "./App.css";
@@ -31,34 +31,13 @@ const words = [
 const gridSize = { rows: 10, columns: 14 };
 
 function App() {
-  const [currentWord, setCurrentWord] = useState([]);
-  const [foundWords, setFoundWords] = useState([]);
+  const completePuzzle = generatePuzzle(words, gridSize);
 
-  const wordsList = words.map(
-    eachWord =>
-      (eachWord = {
-        word: eachWord,
-        found: false,
-      })
-  );
-  // const wordsList = words.map(
-  //   eachWord =>
-  //     (eachWord = {
-  //       word: eachWord,
-  //       found: false,
-  //     })
-  // );
-
-  const completePuzzle = generatePuzzle(wordsList, gridSize);
   return (
     <Box sx={flexBoxSx}>
-      <WordSearchProvider>
-        <WordList wordsList={wordsList} />
-        <PuzzleContainer
-          completePuzzle={completePuzzle}
-          wordsList={wordsList}
-          setCurrentWord={setCurrentWord}
-        />
+      <WordSearchProvider words={words}>
+        <WordList />
+        <PuzzleContainer completePuzzle={completePuzzle} />
       </WordSearchProvider>
     </Box>
   );

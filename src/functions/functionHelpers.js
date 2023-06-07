@@ -98,22 +98,22 @@ export function checkEligibile(current, initial, puzzle) {
 // sets correct order of selected letters based on direction of highlight
 export function organizeSelectedWord(initial, puzzle) {
   // dispatch({ type: "selected_word", selected: "" });
-  let selectedBoxes = [];
+  let boxes = [];
 
   puzzle.map(row =>
     row.map(box => {
       if (box.selected === true) {
-        selectedBoxes.push(box);
+        boxes.push(box);
       }
     })
   );
 
-  if (selectedBoxes.length > 1) {
-    const sameRow = initial.row === selectedBoxes[1].row;
-    const sameCol = initial.col === selectedBoxes[1].col;
-    const initialColLess = initial.col < selectedBoxes[1].col;
-    const initialColMore = initial.col > selectedBoxes[1].col;
-    const initialRowLess = initial.row < selectedBoxes[1].row;
+  if (boxes.length > 1) {
+    const sameRow = initial.row === boxes[1].row;
+    const sameCol = initial.col === boxes[1].col;
+    const initialColLess = initial.col < boxes[1].col;
+    const initialColMore = initial.col > boxes[1].col;
+    const initialRowLess = initial.row < boxes[1].row;
     let direction;
     // SET DIRECTION OF WORD
     if (sameRow) {
@@ -130,13 +130,43 @@ export function organizeSelectedWord(initial, puzzle) {
     const reorderDirection = ["left", "up", "upLeft", "upRight"];
 
     reorderDirection.forEach(option => {
-      direction === option && selectedBoxes.reverse();
+      direction === option && boxes.reverse();
     });
 
-    // turn selectedBoxes array into selected word string
-    let word = "";
-    selectedBoxes.map(box => (word += box.letter));
+    // turn boxes array into selected word string
+    let selectedWord = "";
+    boxes.map(box => (selectedWord += box.letter));
 
-    return { word, selectedBoxes };
+    return { selectedWord, boxes };
+  } else return false;
+}
+
+export function updateWordsList(wordsList, initialBox, completePuzzle) {
+  const { selectedWord, boxes } = organizeSelectedWord(
+    initialBox,
+    completePuzzle
+  );
+
+  if (selectedWord) {
+    let isFound;
+    wordsList.map(word => {
+      if (word.word.toUpperCase() === selectedWord.toUpperCase()) {
+        word.found = true;
+        boxes.map(box => (box.found = true));
+        isFound = true;
+      }
+    });
+
+    if (!isFound) {
+      boxes.map(box => (box.fail = true));
+
+      setTimeout(() => {
+        boxes.map(box => (box.fail = false));
+      }, 1000);
+    } else
+      setTimeout(() => {
+        boxes.map(box => (box.locked = true));
+      }, 1000);
+    return wordsList;
   } else return false;
 }

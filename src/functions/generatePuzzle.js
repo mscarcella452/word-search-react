@@ -129,29 +129,17 @@ function addMissingLetters(grid) {
   return grid.map((row, rowIndex) =>
     row.map(
       (letter, columnIndex) =>
-        letter === "."
-          ? (letter = {
-              letter: "--",
-              // letter: `${rowIndex}, ${columnIndex}`,
-              // letter: letters[randomLetter()],
-              selected: false,
-              found: false,
-              fail: false,
-              locked: false,
-              row: rowIndex,
-              col: columnIndex,
-            })
-          : (letter = {
-              // letter: `${rowIndex}, ${columnIndex}`,
-              letter: letter,
-              selected: false,
-              found: false,
-              fail: false,
-              locked: false,
-              row: rowIndex,
-              col: columnIndex,
-            })
-      //   letter === "." ? (letter = "--") : (letter = letter)
+        (letter = {
+          letter: letter === "." ? letters[randomLetter()] : letter,
+          // letter: letter === "." ? `${rowIndex}, ${columnIndex}` : letter,
+          // letter: letter === "." ? "--" : letter,
+          selected: false,
+          found: false,
+          fail: false,
+          locked: false,
+          row: rowIndex,
+          col: columnIndex,
+        })
     )
   );
 }
@@ -161,11 +149,12 @@ function addMissingLetters(grid) {
 // ORGANIZE WORDS LIST
 // ------------------------------------
 // ------------------------------------
-function organizeWordsList(wordsList) {
+export function organizeWordsList(wordsList) {
   // sort by length (long to short)
   wordsList.sort((a, b) => b.length - a.length);
-  //   two dimensional array for individual letters in each word i.e ['happy'] --> [['h','a', 'p', 'p', 'y']]
-  return wordsList.map(word => Array.from(word.word.toUpperCase()));
+
+  // return two dimensional array for individual letters in each word i.e ['happy'] --> [['h','a', 'p', 'p', 'y']]
+  return wordsList.map(word => Array.from(word.toUpperCase()));
 }
 
 // ------------------------------------
@@ -173,15 +162,15 @@ function organizeWordsList(wordsList) {
 // GENERATE PUZZLE
 // ------------------------------------
 // ------------------------------------
-export default function generatePuzzle(wordsList, gridSize) {
-  const words = organizeWordsList(wordsList);
+export function generatePuzzle(words, gridSize) {
+  const organizedWords = organizeWordsList(words);
 
   //   generate puzzle grid
   const puzzleGrid = Array(gridSize.rows)
     .fill(null)
     .map(() => Array(gridSize.columns).fill("."));
 
-  placeWords(puzzleGrid, gridSize, words);
+  placeWords(puzzleGrid, gridSize, organizedWords);
 
   const completePuzzle = addMissingLetters(puzzleGrid);
 
