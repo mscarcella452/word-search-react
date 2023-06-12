@@ -5,7 +5,19 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
-const letterBoxStyles = { letters: { backgroundColor: "red" } };
+const betaProps = [
+  "baloney",
+  "hike",
+  "fallen",
+  "booty",
+  "soap",
+  "capper",
+  "civic",
+  "hi",
+  // "illustrator",
+  // "photoshop",
+  // "xd",
+];
 root.render(
   <React.StrictMode>
     <App />

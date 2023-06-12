@@ -1,13 +1,37 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useToggle } from "./customHooks";
 import { Box, Typography } from "@mui/material";
 import PuzzleContainer from "./components/PuzzleContainer";
 import { generatePuzzle, organizeWordsList } from "./functions/generatePuzzle";
 import WordSearchProvider from "./Context/WordSearchProvider";
 import WordList from "./components/WordList";
-
 import StylesProvider from "./Context/StylesProvider";
 import "./App.css";
+
+async function fetchWords(total, length) {
+  const response = await fetch(
+    `https://random-word-api.vercel.app/api?words=${total}&length=${length}`
+  );
+
+  if (response.ok) {
+    // if HTTP-status is 200-299
+    // get the response body (the method explained below)
+    let words = await response.json();
+    return words;
+  } else {
+    alert("HTTP-Error: " + response.status);
+  }
+}
+let wordsApi = await fetchWords(4, 5);
+async function fetchApi() {
+  let words1 = await fetchWords(4, 5);
+  let words2 = await fetchWords(2, 3);
+  let words3 = await fetchWords(3, 6);
+  let words4 = await fetchWords(1, 8);
+
+  const results = [...words1, ...words2, ...words3, ...words4];
+  return results;
+}
 
 const flexBoxSx = {
   display: "flex",
@@ -54,9 +78,34 @@ function App({
   wordListStyles = "",
   customColors = defaultColors,
   gridSize = defaultGridSize,
-  words = defaultWords,
+  words = "",
+  totalWords = 8,
 }) {
-  const completePuzzle = generatePuzzle(words, gridSize);
+  const [puzzle, setPuzzle] = useState();
+  const [wordsList, setWordsList] = useState();
+
+  useEffect(() => {
+    let loading = true;
+    (async () => {
+      const response = await fetch(
+        `https://random-word-api.vercel.app/api?words=${totalWords}&length=${5}`
+      );
+      const data = await response.json();
+      if (loading) {
+        let completePuzzle;
+        if (words === "") {
+          setWordsList(data);
+          completePuzzle = generatePuzzle(data, gridSize);
+        } else {
+          setWordsList(words);
+          completePuzzle = generatePuzzle(words, gridSize);
+        }
+        setPuzzle(completePuzzle);
+      }
+    })();
+
+    return () => (loading = false);
+  }, []);
 
   return (
     <StylesProvider
@@ -69,25 +118,29 @@ function App({
             <Typography>{letter}</Typography>
           ))}
         </Box> */}
-        <WordSearchProvider words={words}>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              width: 1,
-              height: 1,
-              background: "blue",
-              gap: "1rem",
-            }}
-          >
-            <PuzzleContainer
-              completePuzzle={completePuzzle}
-              puzzleContainerStylesProp={puzzleContainerStyles}
-            />
-            <WordList wordListStylesProp={wordListStyles} />
-          </Box>
-        </WordSearchProvider>
+
+        {wordsList && (
+          <WordSearchProvider words={wordsList}>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                width: 1,
+                height: 1,
+                background: "blue",
+                gap: "1rem",
+              }}
+            >
+              <PuzzleContainer
+                wordsList={wordsList}
+                completePuzzle={puzzle}
+                puzzleContainerStylesProp={puzzleContainerStyles}
+              />
+              <WordList wordListStylesProp={wordListStyles} />
+            </Box>
+          </WordSearchProvider>
+        )}
       </Box>
     </StylesProvider>
   );

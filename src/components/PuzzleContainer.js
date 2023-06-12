@@ -9,6 +9,7 @@ import {
 } from "../functions/functionHelpers";
 import { v4 as uuidv4 } from "uuid";
 import { dispatchContext, gameContext } from "../Context/WordSearchProvider";
+import { generatePuzzle } from "../functions/generatePuzzle";
 
 function PuzzleContainer({ completePuzzle, puzzleContainerStylesProp }) {
   const game = useContext(gameContext);
