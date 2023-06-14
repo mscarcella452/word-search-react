@@ -4,6 +4,7 @@ import { letterBoxContext } from "../Context/StylesProvider";
 
 function LetterBox({ box, clickLetter, highlightBoxes, initialBox }) {
   const letterBoxSx = useContext(letterBoxContext);
+
   const handleMouseOver = () => highlightBoxes(box);
 
   const handleClick = () => clickLetter(box);
@@ -19,6 +20,16 @@ function LetterBox({ box, clickLetter, highlightBoxes, initialBox }) {
         "&:hover": {
           ...(!initialBox && letterBoxSx.hover),
         },
+
+        // background: {
+        //   mobile_xxs: "blue",
+        //   mobile_xs: "green",
+        //   mobile_md: "red",
+        //   mobile_lg: "puple",
+        //   sm: "yellow",
+        //   md: "teal",
+        //   lg: "brown",
+        // },
 
         animation: box.fail
           ? "fail 1.5s ease-out"
