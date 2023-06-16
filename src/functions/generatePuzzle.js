@@ -130,9 +130,9 @@ function addMissingLetters(grid) {
     row.map(
       (letter, columnIndex) =>
         (letter = {
-          letter: letter === "." ? letters[randomLetter()] : letter,
+          // letter: letter === "." ? letters[randomLetter()] : letter,
           // letter: letter === "." ? `${rowIndex}, ${columnIndex}` : letter,
-          // letter: letter === "." ? "--" : letter,
+          letter: letter === "." ? "--" : letter,
           selected: false,
           found: false,
           fail: false,
@@ -169,7 +169,7 @@ export function generatePuzzle(words, gridSize) {
   const puzzleGrid = Array(gridSize.rows)
     .fill(null)
     .map(() => Array(gridSize.cols).fill("."));
-  console.log(puzzleGrid);
+
   placeWords(puzzleGrid, gridSize, organizedWords);
 
   const completePuzzle = addMissingLetters(puzzleGrid);

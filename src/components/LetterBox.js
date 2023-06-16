@@ -2,7 +2,6 @@ import { useContext } from "react";
 import { Box } from "@mui/material";
 import { letterBoxContext } from "../Context/StylesProvider";
 import { mediaContext } from "../Context/MediaContextProvider";
-import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
 
 function LetterBox({ box, clickLetter, highlightBoxes, initialBox }) {
   const letterBoxSx = useContext(letterBoxContext);
@@ -18,21 +17,11 @@ function LetterBox({ box, clickLetter, highlightBoxes, initialBox }) {
       onMouseOver={handleMouseOver}
       sx={{
         ...letterBoxSx.unselectedBoxes,
-        ...(box.selected && letterBoxSx.selectedBoxes),
+        ...(box.selected && letterBoxSx.highlightedBoxes),
         ...(box.found && letterBoxSx.foundBoxes),
         "&:hover": {
-          ...(!initialBox && letterBoxSx.hover),
+          ...(!initialBox && letterBoxSx.highlightedBoxes),
         },
-
-        // background: {
-        //   mobile_xxs: "blue",
-        //   mobile_xs: "green",
-        //   mobile_md: "red",
-        //   mobile_lg: "puple",
-        //   sm: "yellow",
-        //   md: "teal",
-        //   lg: "brown",
-        // },
 
         fontSize: ipad
           ? "1.5rem"
@@ -56,14 +45,6 @@ function LetterBox({ box, clickLetter, highlightBoxes, initialBox }) {
           : "none",
         "@keyframes fail": animationSx("fail.main", "fail.color"),
         "@keyframes found": animationSx("foundWord.main", "foundWord.color"),
-
-        // display: "flex",
-        // justifyContent: "center",
-        // alignItems: "center",
-
-        width: 1,
-        height: 1,
-        // minWidth: "25px",
       }}
     >
       {box.letter}
@@ -75,7 +56,7 @@ const keyFramesSx = {
   default: {
     backgroundImage:
       "url('https://www.transparenttextures.com/patterns/noise-lines.png')",
-    fontWeight: "bold",
+    // fontWeight: "bold",
     color: "white",
     // border: "2px solid transparent",
     // borderRadius: "50%",

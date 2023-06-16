@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { Box, Typography, useMediaQuery } from "@mui/material";
+import { Box } from "@mui/material";
 import { gameContext } from "../Context/WordSearchProvider";
 import { v4 as uuidv4 } from "uuid";
 import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
@@ -47,12 +47,9 @@ function WordList({ wordListStylesProp }) {
       <Grid
         container
         sx={{
-          height: 1,
-
-          width: 1,
-
           ...flexBoxSx,
-          justifyContent: "flex-start",
+          height: 1,
+          width: 1,
         }}
         spacing={{ xxs: 0.75, sm: 1, md: 1.5 }}
       >
@@ -63,14 +60,6 @@ function WordList({ wordListStylesProp }) {
             sm={landscape.mobile ? 4 : landscape.duo ? 6 : 3}
             md={landscape.mobile || portrait.ipad ? 4 : 4}
             lg={4}
-            // sx={{
-            //   ...flexBoxSx,
-            //   background: "Red",
-
-            //   // width: "125px",
-
-            //   // height: "50px",
-            // }}
             key={uuidv4()}
           >
             <Box
@@ -94,27 +83,12 @@ function WordList({ wordListStylesProp }) {
                   : landscape.mobile
                   ? ".25rem"
                   : { xxs: ".25rem", md: ".35rem" },
-                // textDecoration: word.found && "line-through",
-                backgroundColor: word.found
-                  ? "foundWord.main"
-                  : "primary.color",
-                color: word.found ? "foundWord.color" : "black",
-                fontWeight: word.found && "bold",
-                // backgroundImage:
-                //   "url('https://www.transparenttextures.com/patterns/noise-lines.png')",
-                backgroundImage: word.found
-                  ? "url('https://www.transparenttextures.com/patterns/noise-lines.png')"
-                  : "url('https://www.transparenttextures.com/patterns/lined-paper-2.png')",
-                // backgroundImage: word.found
-                //   ? "url('https://www.transparenttextures.com/patterns/noise-lines.png')"
-                //   : "url('https://www.transparenttextures.com/patterns/lined-paper-2.png')",
 
                 textTransform: "capitalize",
                 border: ".5px solid",
-                borderColor: !word.found ? "black" : "foundWord.main",
-                borderRadius: word.found ? "5px" : "5px",
-
-                boxShadow: ".5px 1px 1.5px  black",
+                borderRadius: "5px",
+                boxShadow: "1px 1px 2px black",
+                ...(word.found ? foundWordSx : defaultWordSx),
               }}
             >
               {word.word}
@@ -134,37 +108,19 @@ const flexBoxSx = {
   alignItems: "center",
 };
 
-const wordsListContainerSx = {
-  ...flexBoxSx,
-  flexDirection: "column",
-  // width: 1,
-  // padding: { xxs: " .25rem", mobile: " 1rem", md: "1rem 1.5rem" },
-  // overflow: "scroll",
+const foundWordSx = {
+  borderColor: "foundWord.main",
+  backgroundColor: "foundWord.main",
+  color: "foundWord.color",
+  fontWeight: "bold",
+  backgroundImage:
+    "url('https://www.transparenttextures.com/patterns/noise-lines.png')",
 };
-
-//  <Typography
-//    sx={{
-//      ...flexBoxSx,
-//      // textDecoration: word.found && "line-through",
-//      backgroundColor: word.found ? "foundWord.main" : "white",
-//      color: word.found ? "foundWord.color" : "fail.dark",
-//      fontWeight: word.found && "bold",
-//      backgroundImage:
-//        "url('https://www.transparenttextures.com/patterns/noise-lines.png')",
-//      backgroundImage: word.found
-//        ? "url('https://www.transparenttextures.com/patterns/noise-lines.png')"
-//        : "url('https://www.transparenttextures.com/patterns/lined-paper-2.png')",
-
-//
-//      // textTransform: "uppercase",
-//      // border: "1px solid",
-//      // borderColor: !word.found ? "grey" : "foundWord.main",
-//      borderRadius: "5px",
-//      boxShadow: ".5px 1px 1.5px inset black",
-//      // boxShadow: !word.found
-//      //   ? "2px 2px 2px inset grey"
-//      //   : ".5px 1px 1.5px inset black",
-//    }}
-//  >
-//    {word.word}
-//  </Typography>;
+const defaultWordSx = {
+  borderColor: "black",
+  backgroundColor: "primary.color",
+  color: "black",
+  fontWeight: "none",
+  backgroundImage:
+    "url('https://www.transparenttextures.com/patterns/lined-paper-2.png')",
+};

@@ -6,14 +6,6 @@ export const letterBoxContext = createContext();
 
 const breakpoints = {
   values: {
-    // mobile_xxs: 0,
-    // mobile_xs: 325,
-    // mobile_md: 391,
-    // mobile_lg: 499,
-    // sm: 560,
-    // md: 900,
-    // lg: 1200,
-    // xl: 1536,
     xxs: 0,
     xs: 325,
     mobile: 500,
@@ -30,17 +22,14 @@ function StylesProvider({ letterBoxStyles, customColors, children }) {
       ...defaultLetterBoxSx.unselectedBoxes,
       ...letterBoxStyles.unselectedBoxes,
     },
-    selectedBoxes: {
-      ...defaultLetterBoxSx.selectedBoxes,
-      ...letterBoxStyles.selectedBoxes,
-    },
+
     foundBoxes: {
       ...defaultLetterBoxSx.foundBoxes,
       ...letterBoxStyles.foundBoxes,
     },
-    hover: {
-      ...defaultLetterBoxSx.hover,
-      ...letterBoxStyles.hover,
+    highlightedBoxes: {
+      ...defaultLetterBoxSx.highlightedBoxes,
+      ...letterBoxStyles.highlightedBoxes,
     },
   };
 
@@ -52,29 +41,14 @@ function StylesProvider({ letterBoxStyles, customColors, children }) {
         borderColor: customColors.primary.borderColor,
         hoverBackground: customColors.primary.hoverBackground,
       },
-      letterBox: {
-        main: customColors.letterBox.background,
-        color: customColors.letterBox.color,
-        borderColor: customColors.letterBox.borderColor,
-      },
-      wordList: {
-        main: customColors.wordList.background,
-        color: customColors.wordList.color,
-      },
+
       foundWord: {
         main: customColors.foundWord.background,
         color: customColors.foundWord.color,
-        borderColor: customColors.foundWord.borderColor,
       },
       fail: {
         main: customColors.fail.background,
         color: customColors.fail.color,
-        borderColor: customColors.fail.borderColor,
-      },
-      typography: {
-        hover: {
-          color: "Red",
-        },
       },
     },
 
@@ -82,7 +56,6 @@ function StylesProvider({ letterBoxStyles, customColors, children }) {
   });
 
   return (
-    // <wordsListContext.Provider value={gameDispatch}>
     <ThemeProvider theme={theme}>
       <letterBoxContext.Provider value={letterBoxSx}>
         {children}

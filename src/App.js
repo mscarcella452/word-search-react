@@ -1,23 +1,12 @@
 import { useState, useEffect, useContext } from "react";
-import { useToggle } from "./customHooks";
-import { Box, Typography, Button, useMediaQuery } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import PuzzleContainer from "./components/PuzzleContainer";
-import { generatePuzzle, organizeWordsList } from "./functions/generatePuzzle";
+import { generatePuzzle } from "./functions/generatePuzzle";
 import WordSearchProvider from "./Context/WordSearchProvider";
 import WordList from "./components/WordList";
 import StylesProvider from "./Context/StylesProvider";
 import { mediaContext } from "./Context/MediaContextProvider";
 import "./App.css";
-
-export const media = {
-  tiny: "(max-height:350px)",
-  small: "(min-width:400px) and (min-height:351px) and (max-height: 374px)",
-  medium: "(min-width:400px) and (min-height:375px) and (max-height: 412px)",
-  large: "(min-width:400px) and (min-height:413px) and (max-height:450px)",
-  extraLarge:
-    "(min-width:700px) and (max-width:800px) and (min-height:500px) and (max-height:640px)",
-  ipad: "(min-width:1025px) or (min-height: 1024px)",
-};
 
 async function fetchWords(total, length) {
   const response = await fetch(
@@ -70,14 +59,8 @@ const defaultColors = {
     hoverBackground: "transparent",
     borderColor: "#3F497F",
   },
-  letterBox: { background: "#fff", color: "#000", borderColor: "#fff" },
-  wordList: { background: "#187498", color: "#000" },
-  foundWord: {
-    background: "#539165",
-    color: "#fff",
-    borderColor: "#539165",
-  },
-  fail: { background: "#EB5353", color: "#fff", borderColor: "#EB5353ff" },
+  foundWord: { background: "#539165", color: "#fff" },
+  fail: { background: "#EB5353", color: "#fff" },
 };
 
 function App({
@@ -167,7 +150,7 @@ function App({
             <Typography
               elevation={10}
               sx={{
-                width: 1,
+                ...titleSx,
                 height: ipad
                   ? "60px"
                   : {
@@ -176,13 +159,7 @@ function App({
                       mobile: "40px",
                       sm: landscape.galaxy ? "25px" : "45px",
                     },
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                // // fontFamily: "'Kalam', cursive",
-                fontFamily: "'Sigmar', cursive",
-                // fontFamily: "'Lalezar', cursive",
-                color: "primary.color",
+
                 fontSize: ipad
                   ? "3rem"
                   : {
@@ -215,47 +192,12 @@ function App({
                     },
               }}
             >
-              {/* <Box
-                sx={{
-                  ...flexBoxSx,
-                  flexDirection: "column",
-                  // width: { mobile_xxs: 1, md: "fit-content" },
-                  // height: { mobile_xxs: "fit-content", md: 1 },
-                  // "@media (max-height: 350px)": {
-                  //   height: 1,
-                  // },
-
-                  // "@media (min-width:400px) and (max-height:450px)": {
-                  //   height: 1,
-                  // },
-                  height: "fit-content",
-                  width: "fit-content",
-
-                  maxWidth: 1,
-
-                  maxHeight: 1,
-                  gap: ".5rem",
-
-                  background: {
-                    xxs: "blue",
-                    xs: "purple",
-                    mobile: "orange",
-                    sm: "yellow",
-                    md: "green",
-                    lg: "gray",
-                  },
-                }}
-              > */}
-
               <PuzzleContainer
                 wordsList={wordsList}
                 completePuzzle={puzzle}
                 puzzleContainerStylesProp={puzzleContainerStyles}
                 handlePlayAgain={handlePlayAgain}
-                gridSize={gridSize}
               />
-              {/* </Box> */}
-
               <WordList wordListStylesProp={wordListStyles} />
             </Box>
           </WordSearchProvider>
@@ -280,9 +222,6 @@ const appSx = {
   overflow: "hidden",
   width: 1,
   height: "100vh",
-
-  // backgroundImage:
-  //   "url('https://www.transparenttextures.com/patterns/lined-paper-2.png')",
   backgroundImage:
     "url('https://www.transparenttextures.com/patterns/noise-lines.png')",
   backgroundColor: "primary.dark",
@@ -290,48 +229,15 @@ const appSx = {
 
 const containerSx = {
   ...flexBoxSx,
-
-  // "@media (max-height: 450px)": {
-  //   flexDirection: "row",
-  //   justifyContent: "space-around",
-  //   alignItems: "center",
-  // },
-  // "@media (min-height: 1200px)": {
-  //   flexDirection: "column",
-  //   justifyContent: "center",
-  //   alignItems: "space-around",
-  // },
-  // "@media (min-width:700px)": {
-  //   "@media (min-height:500px) and (max-height:640px)": {
-  //     flexDirection: "row",
-  //     justifyContent: "space-around",
-  //     alignItems: "center",
-  //   },
-  // },
-  // justifyContent: { moblie_xxs: "flex-end", md: "center" },
-  // alignItems: { xxs: "space-around", md: "center" },
   justifyContent: "space-around",
-
-  // justifyContent: "flex-start",
-
   width: 1,
   height: 1,
-
   gap: { xxs: ".5rem", mobile: "1rem", md: "none" },
-  position: "relative",
-  // background: "teal",
-  // border: "2px solid black",
-  // borderRadius: "25px",
-  // boxShadow: "1.25px 1.25px 1.75px black",
 };
 
 const titleSx = {
   ...flexBoxSx,
   width: 1,
-  padding: ".5rem 1rem",
-  textTransform: "uppercase",
-  fontSize: { xxs: "1rem", mobile: "1.5rem", md: "2rem" },
-  fontWeight: "bold",
-  fontFamily: "'Kalam', cursive",
-  // textDecoration: "underline",
+  fontFamily: "'Sigmar', cursive",
+  color: "primary.color",
 };
