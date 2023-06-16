@@ -1,12 +1,9 @@
 import { useContext } from "react";
 import { Box } from "@mui/material";
 import { letterBoxContext } from "../Context/StylesProvider";
-import { mediaContext } from "../Context/MediaContextProvider";
-import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
 
 function LetterBox({ box, clickLetter, highlightBoxes, initialBox }) {
   const letterBoxSx = useContext(letterBoxContext);
-  const { mobileLandscape, ipad } = useContext(mediaContext);
 
   const handleMouseOver = () => highlightBoxes(box);
 
@@ -34,17 +31,6 @@ function LetterBox({ box, clickLetter, highlightBoxes, initialBox }) {
         //   lg: "brown",
         // },
 
-        fontSize: ipad
-          ? "1.5rem"
-          : {
-              xxs: ".7rem",
-              xs: mobileLandscape ? ".85rem" : "1rem",
-              mobile: "1.15rem",
-              sm: mobileLandscape ? ".9rem" : "1.25rem",
-              md: mobileLandscape ? "1rem" : "1.25rem",
-              lg: "1.45rem",
-            },
-
         animation: box.fail
           ? "fail 1.5s ease-out"
           : !box.locked && box.found
@@ -52,14 +38,6 @@ function LetterBox({ box, clickLetter, highlightBoxes, initialBox }) {
           : "none",
         "@keyframes fail": animationSx("fail.main", "fail.color"),
         "@keyframes found": animationSx("foundWord.main", "foundWord.color"),
-
-        // display: "flex",
-        // justifyContent: "center",
-        // alignItems: "center",
-
-        width: 1,
-        height: 1,
-        // minWidth: "25px",
       }}
     >
       {box.letter}
@@ -73,7 +51,7 @@ const keyFramesSx = {
       "url('https://www.transparenttextures.com/patterns/noise-lines.png')",
     fontWeight: "bold",
     color: "white",
-    // border: "2px solid transparent",
+    border: "2px solid transparent",
     // borderRadius: "50%",
     zIndex: 10,
     backgroundColor: "transparent",

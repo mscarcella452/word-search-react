@@ -6,11 +6,18 @@ export const letterBoxContext = createContext();
 
 const breakpoints = {
   values: {
-    mobile_xxs: 0,
-    mobile_xs: 325,
-    mobile_md: 391,
-    mobile_lg: 499,
-    sm: 560,
+    // mobile_xxs: 0,
+    // mobile_xs: 325,
+    // mobile_md: 391,
+    // mobile_lg: 499,
+    // sm: 560,
+    // md: 900,
+    // lg: 1200,
+    // xl: 1536,
+    xxs: 0,
+    xs: 325,
+    mobile: 500,
+    sm: 650,
     md: 900,
     lg: 1200,
     xl: 1536,

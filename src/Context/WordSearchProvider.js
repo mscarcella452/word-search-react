@@ -6,6 +6,7 @@ export const dispatchContext = createContext();
 
 const ACTIONS = {
   UPDATE_WORDSLIST: "update_WordsList",
+  PLAY_AGAIN: "play_again",
 };
 
 const wordsReducer = (game, action) => {

@@ -34,7 +34,7 @@ function isValidPosition(puzzleGrid, word, orientation) {
       newRow < 0 ||
       newRow >= gridSize.rows ||
       newCol < 0 ||
-      newCol >= gridSize.columns;
+      newCol >= gridSize.cols;
 
     // positions before the first letter and after the last letter?
     const notLetterIndex = i < 0 || i >= word.length;
@@ -85,7 +85,7 @@ function placeWords(grid, gridSize, words) {
       const orientation =
         directions[Math.floor(Math.random() * directions.length)];
       const row = Math.floor(Math.random() * gridSize.rows);
-      const col = Math.floor(Math.random() * gridSize.columns);
+      const col = Math.floor(Math.random() * gridSize.cols);
 
       const puzzleGrid = { grid, gridSize, row, col };
       if (isValidPosition(puzzleGrid, word, orientation)) {
@@ -168,8 +168,8 @@ export function generatePuzzle(words, gridSize) {
   //   generate puzzle grid
   const puzzleGrid = Array(gridSize.rows)
     .fill(null)
-    .map(() => Array(gridSize.columns).fill("."));
-
+    .map(() => Array(gridSize.cols).fill("."));
+  console.log(puzzleGrid);
   placeWords(puzzleGrid, gridSize, organizedWords);
 
   const completePuzzle = addMissingLetters(puzzleGrid);

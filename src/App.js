@@ -1,11 +1,12 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useToggle } from "./customHooks";
-import { Box, Typography, Button } from "@mui/material";
+import { Box, Typography, Button, useMediaQuery } from "@mui/material";
 import PuzzleContainer from "./components/PuzzleContainer";
 import { generatePuzzle, organizeWordsList } from "./functions/generatePuzzle";
 import WordSearchProvider from "./Context/WordSearchProvider";
 import WordList from "./components/WordList";
 import StylesProvider from "./Context/StylesProvider";
+import { mediaContext } from "./Context/MediaContextProvider";
 import "./App.css";
 
 export const media = {
@@ -15,7 +16,7 @@ export const media = {
   large: "(min-width:400px) and (min-height:413px) and (max-height:450px)",
   extraLarge:
     "(min-width:700px) and (max-width:800px) and (min-height:500px) and (max-height:640px)",
-  ipad: "(min-width:1025px) or (min-height: 1024px) and (min-height: 700px)",
+  ipad: "(min-width:1025px) or (min-height: 1024px)",
 };
 
 async function fetchWords(total, length) {
@@ -60,7 +61,7 @@ const defaultWords = [
   // "xd",
 ];
 
-const defaultGridSize = { rows: 11, columns: 13 };
+const defaultGridSize = { rows: 11, cols: 13 };
 
 const defaultColors = {
   primary: {
@@ -86,8 +87,10 @@ function App({
   customColors = defaultColors,
   gridSize = defaultGridSize,
   words = "",
-  totalWords = 12,
+  totalWords = 15,
 }) {
+  const { mobileLandscape, ipad } = useContext(mediaContext);
+
   const [puzzle, setPuzzle] = useState();
   const [wordsList, setWordsList] = useState();
 
@@ -95,7 +98,7 @@ function App({
     let loading = true;
     (async () => {
       const response = await fetch(
-        `https://random-word-api.vercel.app/api?words=${totalWords}&length=${5}`
+        `https://random-word-api.vercel.app/api?words=${totalWords}&length=${8}`
       );
       const data = await response.json();
       if (loading) {
@@ -118,7 +121,7 @@ function App({
   const handlePlayAgain = () => {
     (async () => {
       const response = await fetch(
-        `https://random-word-api.vercel.app/api?words=${totalWords}&length=${5}`
+        `https://random-word-api.vercel.app/api?words=${totalWords}&length=${8}`
       );
       const data = await response.json();
 
@@ -135,35 +138,112 @@ function App({
       letterBoxStyles={letterBoxStyles}
       customColors={customColors}
     >
-      <Box sx={appSx}>
+      <Box
+        sx={{
+          ...appSx,
+          padding: {
+            xxs: ".5rem",
+            xs: "1rem",
+            mobile: "1.25rem",
+            sm: mobileLandscape ? "1rem" : "1.25rem",
+            md: "1.5rem",
+            lg: "2rem",
+          },
+          gap: ipad ? "1rem" : mobileLandscape ? "none" : ".5rem",
+        }}
+      >
         {wordsList && (
           <WordSearchProvider words={wordsList}>
-            <Box sx={containerSx}>
-              <Box
+            <Typography
+              elevation={10}
+              sx={{
+                width: 1,
+                height: ipad
+                  ? "60px"
+                  : {
+                      xxs: "35px",
+                      xs: mobileLandscape ? "30px" : "40px",
+                      mobile: "40px",
+                      sm: "45px",
+                    },
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                // // fontFamily: "'Kalam', cursive",
+                fontFamily: "'Sigmar', cursive",
+                // fontFamily: "'Lalezar', cursive",
+                color: "primary.color",
+                fontSize: ipad
+                  ? "3rem"
+                  : {
+                      xxs: "1.15rem",
+                      xs: mobileLandscape ? "1.15rem" : "1.5rem",
+                      md: mobileLandscape ? "1.5rem" : "2rem",
+                    },
+                background: {
+                  xxs: "blue",
+                  xs: "purple",
+                  mobile: "orange",
+                  sm: "yellow",
+                  md: "green",
+                  lg: "transparent",
+                },
+              }}
+            >
+              -- Word Search --
+            </Typography>
+            <Box
+              sx={{
+                ...containerSx,
+                flexDirection: ipad
+                  ? { xxs: "column", md: "row" }
+                  : mobileLandscape
+                  ? "row"
+                  : { xxs: "column", md: "row" },
+              }}
+            >
+              {/* <Box
                 sx={{
                   ...flexBoxSx,
-                  width: { mobile_xxs: 1, md: "fit-content" },
-                  height: { mobile_xxs: "fit-content", md: 1 },
-                  "@media (max-height: 350px)": {
-                    height: 1,
-                  },
+                  flexDirection: "column",
+                  // width: { mobile_xxs: 1, md: "fit-content" },
+                  // height: { mobile_xxs: "fit-content", md: 1 },
+                  // "@media (max-height: 350px)": {
+                  //   height: 1,
+                  // },
 
-                  "@media (min-width:400px) and (max-height:450px)": {
-                    height: 1,
-                  },
+                  // "@media (min-width:400px) and (max-height:450px)": {
+                  //   height: 1,
+                  // },
+                  height: "fit-content",
+                  width: "fit-content",
+
+                  maxWidth: 1,
 
                   maxHeight: 1,
+                  gap: ".5rem",
+
+                  background: {
+                    xxs: "blue",
+                    xs: "purple",
+                    mobile: "orange",
+                    sm: "yellow",
+                    md: "green",
+                    lg: "gray",
+                  },
                 }}
-              >
-                <PuzzleContainer
-                  wordsList={wordsList}
-                  completePuzzle={puzzle}
-                  puzzleContainerStylesProp={puzzleContainerStyles}
-                  handlePlayAgain={handlePlayAgain}
-                />
-              </Box>
-              <WordList wordListStylesProp={wordListStyles} />
+              > */}
+
+              <PuzzleContainer
+                wordsList={wordsList}
+                completePuzzle={puzzle}
+                puzzleContainerStylesProp={puzzleContainerStyles}
+                handlePlayAgain={handlePlayAgain}
+                gridSize={gridSize}
+              />
               {/* </Box> */}
+
+              <WordList wordListStylesProp={wordListStyles} />
             </Box>
           </WordSearchProvider>
         )}
@@ -182,39 +262,51 @@ const flexBoxSx = {
 
 const appSx = {
   ...flexBoxSx,
+  flexDirection: "column",
+  justifyContent: "flex-start",
   overflow: "hidden",
   width: 1,
   height: "100vh",
-  padding: { mobile_xxs: ".5rem", mobile_xs: "1rem", md: "1.5rem", lg: "2rem" },
+
   // backgroundImage:
   //   "url('https://www.transparenttextures.com/patterns/lined-paper-2.png')",
   backgroundImage:
     "url('https://www.transparenttextures.com/patterns/noise-lines.png')",
-  backgroundColor: "foundWord.main",
+  backgroundColor: "primary.dark",
 };
 
 const containerSx = {
   ...flexBoxSx,
-  flexDirection: { mobile_xxs: "column", md: "row" },
-  "@media (max-height: 450px)": {
-    flexDirection: "row",
-  },
-  "@media (min-height: 1200px)": {
-    flexDirection: "column",
-  },
-  "@media (min-width:700px)": {
-    "@media (min-height:500px) and (max-height:640px)": {
-      flexDirection: "row",
-    },
-  },
+
+  // "@media (max-height: 450px)": {
+  //   flexDirection: "row",
+  //   justifyContent: "space-around",
+  //   alignItems: "center",
+  // },
+  // "@media (min-height: 1200px)": {
+  //   flexDirection: "column",
+  //   justifyContent: "center",
+  //   alignItems: "space-around",
+  // },
+  // "@media (min-width:700px)": {
+  //   "@media (min-height:500px) and (max-height:640px)": {
+  //     flexDirection: "row",
+  //     justifyContent: "space-around",
+  //     alignItems: "center",
+  //   },
+  // },
   // justifyContent: { moblie_xxs: "flex-end", md: "center" },
-  // alignItems: "space-around",
+  // alignItems: { xxs: "space-around", md: "center" },
+  justifyContent: "space-around",
+
   // justifyContent: "flex-start",
 
   width: 1,
   height: 1,
-  gap: { mobile_xxs: ".5rem", mobile_lg: "1rem", md: "1.5rem", lg: "2rem" },
+
+  gap: { xxs: ".5rem", mobile: "1rem", md: "none" },
   position: "relative",
+  // background: "teal",
   // border: "2px solid black",
   // borderRadius: "25px",
   // boxShadow: "1.25px 1.25px 1.75px black",
