@@ -130,9 +130,9 @@ function addMissingLetters(grid) {
     row.map(
       (letter, columnIndex) =>
         (letter = {
-          // letter: letter === "." ? letters[randomLetter()] : letter,
+          letter: letter === "." ? letters[randomLetter()] : letter,
           // letter: letter === "." ? `${rowIndex}, ${columnIndex}` : letter,
-          letter: letter === "." ? "--" : letter,
+          // letter: letter === "." ? "--" : letter,
           selected: false,
           found: false,
           fail: false,

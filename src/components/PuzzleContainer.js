@@ -19,7 +19,7 @@ function PuzzleContainer({
 }) {
   const game = useContext(gameContext);
   const dispatch = useContext(dispatchContext);
-  const { mobileLandscape, ipad } = useContext(mediaContext);
+  const { landscape, portrait } = useContext(mediaContext);
   const [initialBox, setInitialBox] = useState();
   const [currentBox, setCurrentBox] = useState();
 
@@ -101,14 +101,31 @@ function PuzzleContainer({
         //   md: "green",
         //   lg: "white",
         // },
-        height: mobileLandscape ? 0.98 : { xxs: 0.8, mobile: 0.65, md: 0.8 },
-        width: { xxs: 1, sm: 0.75, md: 0.65, lg: 0.75 },
-        maxWidth: mobileLandscape
+        // overflow: "scroll",
+        height: landscape.phone
+          ? 0.95
+          : { xxs: 0.8, mobile: 0.65, sm: landscape.duo ? 0.8 : 0.65, md: 0.8 },
+        width: { xxs: 1, sm: 0.75, md: portrait.ipad ? 0.75 : 0.65, lg: 0.75 },
+        maxWidth: landscape.phone
           ? { xxs: "250px", mobile: 0.5 }
-          : { xxs: "290px", xs: 1, mobile: "500px", md: "550px", lg: "650px" },
-        maxHeight: mobileLandscape
-          ? { xxs: "245px", sm: 0.9 }
-          : { xxs: "225px", xs: "375px", mobile: "500px", lg: "600px" },
+          : {
+              xxs: "290px",
+              xs: 1,
+              mobile: "445px",
+              sm: landscape.duo ? "375px" : portrait.ipad ? "750px" : "500px",
+              md: portrait.ipad ? "750px" : "550px",
+              lg: "650px",
+            },
+        maxHeight: landscape.mobile
+          ? { xxs: "245px", sm: 0.95 }
+          : {
+              xxs: "225px",
+              xs: "375px",
+              mobile: "500px",
+
+              lg: "600px",
+            },
+
         // height: ipad
         //   ? {
         //       xxs: "275px",
@@ -119,7 +136,7 @@ function PuzzleContainer({
         //       lg: "700px",
         //       xl: "700px",
         //     }
-        //   : mobileLandscape
+        //   : landscape.mobile
         //   ? {
         //       xxs: "275px",
         //       xs: "245px",
@@ -146,7 +163,7 @@ function PuzzleContainer({
         //       lg: "750px",
         //       xl: "700px",
         //     }
-        //   : mobileLandscape
+        //   : landscape.mobile
         //   ? {
         //       xxs: "275px",
         //       xs: "280px",

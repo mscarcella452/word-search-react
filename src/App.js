@@ -89,7 +89,7 @@ function App({
   words = "",
   totalWords = 15,
 }) {
-  const { mobileLandscape, ipad } = useContext(mediaContext);
+  const { landscape, ipad, portrait } = useContext(mediaContext);
 
   const [puzzle, setPuzzle] = useState();
   const [wordsList, setWordsList] = useState();
@@ -142,14 +142,24 @@ function App({
         sx={{
           ...appSx,
           padding: {
-            xxs: ".5rem",
+            xxs: "1rem",
             xs: "1rem",
             mobile: "1.25rem",
-            sm: mobileLandscape ? "1rem" : "1.25rem",
+            sm: landscape.galaxy
+              ? ".5rem"
+              : landscape.mobile
+              ? "1rem"
+              : "1.25rem",
             md: "1.5rem",
             lg: "2rem",
           },
-          gap: ipad ? "1rem" : mobileLandscape ? "none" : ".5rem",
+          gap: ipad
+            ? portrait.ipad
+              ? "1.5rem"
+              : "1rem"
+            : landscape.phone
+            ? "none"
+            : ".5rem",
         }}
       >
         {wordsList && (
@@ -162,9 +172,9 @@ function App({
                   ? "60px"
                   : {
                       xxs: "35px",
-                      xs: mobileLandscape ? "30px" : "40px",
+                      xs: landscape.mobile ? "30px" : "40px",
                       mobile: "40px",
-                      sm: "45px",
+                      sm: landscape.galaxy ? "25px" : "45px",
                     },
                 display: "flex",
                 justifyContent: "center",
@@ -177,17 +187,18 @@ function App({
                   ? "3rem"
                   : {
                       xxs: "1.15rem",
-                      xs: mobileLandscape ? "1.15rem" : "1.5rem",
-                      md: mobileLandscape ? "1.5rem" : "2rem",
+                      xs: landscape.mobile ? "1.15rem" : "1.5rem",
+                      sm: landscape.galaxy ? "1.15rem" : "1.5rem",
+                      md: landscape.mobile ? "1.5rem" : "2rem",
                     },
-                background: {
-                  xxs: "blue",
-                  xs: "purple",
-                  mobile: "orange",
-                  sm: "yellow",
-                  md: "green",
-                  lg: "transparent",
-                },
+                // background: {
+                //   xxs: "blue",
+                //   xs: "purple",
+                //   mobile: "orange",
+                //   sm: "yellow",
+                //   md: "green",
+                //   lg: "transparent",
+                // },
               }}
             >
               -- Word Search --
@@ -195,11 +206,13 @@ function App({
             <Box
               sx={{
                 ...containerSx,
-                flexDirection: ipad
-                  ? { xxs: "column", md: "row" }
-                  : mobileLandscape
+                flexDirection: landscape.phone
                   ? "row"
-                  : { xxs: "column", md: "row" },
+                  : {
+                      xxs: "column",
+                      sm: landscape.duo ? "row" : "column",
+                      md: portrait.ipad ? "column" : "row",
+                    },
               }}
             >
               {/* <Box

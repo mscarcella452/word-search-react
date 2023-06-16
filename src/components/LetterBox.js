@@ -6,7 +6,7 @@ import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
 
 function LetterBox({ box, clickLetter, highlightBoxes, initialBox }) {
   const letterBoxSx = useContext(letterBoxContext);
-  const { mobileLandscape, ipad } = useContext(mediaContext);
+  const { landscape, ipad } = useContext(mediaContext);
 
   const handleMouseOver = () => highlightBoxes(box);
 
@@ -38,10 +38,14 @@ function LetterBox({ box, clickLetter, highlightBoxes, initialBox }) {
           ? "1.5rem"
           : {
               xxs: ".7rem",
-              xs: mobileLandscape ? ".85rem" : "1rem",
+              xs: landscape.mobile ? ".85rem" : "1rem",
               mobile: "1.15rem",
-              sm: mobileLandscape ? ".9rem" : "1.25rem",
-              md: mobileLandscape ? "1rem" : "1.25rem",
+              sm: landscape.mobile
+                ? ".95rem"
+                : landscape.galaxy
+                ? ".8rem"
+                : "1.15rem",
+              md: landscape.mobile ? "1rem" : "1.25rem",
               lg: "1.45rem",
             },
 
