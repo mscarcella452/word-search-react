@@ -12,8 +12,13 @@ const ACTIONS = {
 const wordsReducer = (game, action) => {
   switch (action.type) {
     case ACTIONS.UPDATE_WORDSLIST:
+      console.log(action.updatedWordsList);
       return {
         wordsList: action.updatedWordsList,
+        counter: {
+          rem: action.rem ? action.rem : game.counter.rem - 1,
+          total: action.total ? action.total : game.counter.total,
+        },
       };
 
     default:
@@ -30,6 +35,7 @@ function WordSearchProvider({ words, children }) {
   );
   const initialValue = {
     wordsList: wordsList,
+    counter: { rem: words.length, total: words.length },
   };
   const [game, gameDispatch] = useReducer(wordsReducer, initialValue);
 

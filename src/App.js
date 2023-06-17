@@ -4,6 +4,7 @@ import PuzzleContainer from "./components/PuzzleContainer";
 import { generatePuzzle } from "./functions/generatePuzzle";
 import WordSearchProvider from "./Context/WordSearchProvider";
 import WordList from "./components/WordList";
+import WordsCounter from "./components/WordsCounter";
 import StylesProvider from "./Context/StylesProvider";
 import { mediaContext } from "./Context/MediaContextProvider";
 import "./App.css";
@@ -70,7 +71,7 @@ function App({
   customColors = defaultColors,
   gridSize = defaultGridSize,
   words = "",
-  totalWords = 15,
+  totalWords = 1,
 }) {
   const { landscape, ipad, portrait } = useContext(mediaContext);
 
@@ -81,19 +82,17 @@ function App({
     let loading = true;
     (async () => {
       const response = await fetch(
-        `https://random-word-api.vercel.app/api?words=${totalWords}&length=${8}`
+        `https://random-word-api.vercel.app/api?words=${totalWords}&length=${5}`
       );
       const data = await response.json();
       if (loading) {
-        let completePuzzle;
         if (words === "") {
           setWordsList(data);
-          completePuzzle = generatePuzzle(data, gridSize);
+          handleSetPuzzle(data);
         } else {
           setWordsList(words);
-          completePuzzle = generatePuzzle(words, gridSize);
+          handleSetPuzzle(words);
         }
-        setPuzzle(completePuzzle);
       }
     })();
 
@@ -101,19 +100,24 @@ function App({
   }, []);
   // const completePuzzle = generatePuzzle(words, gridSize);
 
-  const handlePlayAgain = () => {
-    (async () => {
-      const response = await fetch(
-        `https://random-word-api.vercel.app/api?words=${totalWords}&length=${8}`
-      );
-      const data = await response.json();
+  // const handlePlayAgain = () => {
+  //   (async () => {
+  //     const response = await fetch(
+  //       `https://random-word-api.vercel.app/api?words=${totalWords}&length=${5}`
+  //     );
+  //     const data = await response.json();
 
-      let completePuzzle = generatePuzzle(data, gridSize);
+  //     let completePuzzle = generatePuzzle(data, gridSize);
 
-      setWordsList(data);
+  //     setWordsList(data);
 
-      setPuzzle(completePuzzle);
-    })();
+  //     setPuzzle(completePuzzle);
+  //   })();
+  // };
+
+  const handleSetPuzzle = data => {
+    let completePuzzle = generatePuzzle(data, gridSize);
+    setPuzzle(completePuzzle);
   };
 
   return (
@@ -147,10 +151,10 @@ function App({
       >
         {wordsList && (
           <WordSearchProvider words={wordsList}>
-            <Typography
-              elevation={10}
+            <Box
               sx={{
-                ...titleSx,
+                position: "relative",
+                width: 1,
                 height: ipad
                   ? "60px"
                   : {
@@ -159,27 +163,38 @@ function App({
                       mobile: "40px",
                       sm: landscape.galaxy ? "25px" : "45px",
                     },
-
-                fontSize: ipad
-                  ? "3rem"
-                  : {
-                      xxs: "1.15rem",
-                      xs: landscape.mobile ? "1.15rem" : "1.5rem",
-                      sm: landscape.galaxy ? "1.15rem" : "1.5rem",
-                      md: landscape.mobile ? "1.5rem" : "2rem",
-                    },
-                // background: {
-                //   xxs: "blue",
-                //   xs: "purple",
-                //   mobile: "orange",
-                //   sm: "yellow",
-                //   md: "green",
-                //   lg: "transparent",
-                // },
               }}
             >
-              -- Word Search --
-            </Typography>
+              {/* <WordsCounter
+                generatePuzzle={handleSetPuzzle}
+                totalWords={totalWords}
+              /> */}
+              <Typography
+                elevation={10}
+                sx={{
+                  ...titleSx,
+
+                  fontSize: ipad
+                    ? "3rem"
+                    : {
+                        xxs: "1.15rem",
+                        xs: landscape.mobile ? "1.15rem" : "1.5rem",
+                        sm: landscape.galaxy ? "1.15rem" : "1.5rem",
+                        md: landscape.mobile ? "1.5rem" : "2rem",
+                      },
+                  // background: {
+                  //   xxs: "blue",
+                  //   xs: "purple",
+                  //   mobile: "orange",
+                  //   sm: "yellow",
+                  //   md: "green",
+                  //   lg: "transparent",
+                  // },
+                }}
+              >
+                -- Word Search --
+              </Typography>
+            </Box>
             <Box
               sx={{
                 ...containerSx,
@@ -195,8 +210,9 @@ function App({
               <PuzzleContainer
                 wordsList={wordsList}
                 completePuzzle={puzzle}
+                generatePuzzle={handleSetPuzzle}
+                totalWords={totalWords}
                 puzzleContainerStylesProp={puzzleContainerStyles}
-                handlePlayAgain={handlePlayAgain}
               />
               <WordList wordListStylesProp={wordListStyles} />
             </Box>
@@ -225,6 +241,7 @@ const appSx = {
   backgroundImage:
     "url('https://www.transparenttextures.com/patterns/noise-lines.png')",
   backgroundColor: "primary.dark",
+  position: "relative",
 };
 
 const containerSx = {

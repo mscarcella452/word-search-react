@@ -14,7 +14,8 @@ import { mediaContext } from "../Context/MediaContextProvider";
 function PuzzleContainer({
   completePuzzle,
   puzzleContainerStylesProp,
-  handlePlayAgain,
+  generatePuzzle,
+  totalWords,
 }) {
   const game = useContext(gameContext);
   const dispatch = useContext(dispatchContext);
@@ -22,8 +23,11 @@ function PuzzleContainer({
   const [initialBox, setInitialBox] = useState();
   const [currentBox, setCurrentBox] = useState();
 
-  const handleClickLetter = box =>
-    !initialBox ? setInitialBox(box) : submitSelectedWord();
+  const handleClickLetter = box => {
+    if (game.counter.rem > 0) {
+      !initialBox ? setInitialBox(box) : submitSelectedWord();
+    }
+  };
 
   const handleClearInitialBox = () => {
     if (initialBox) {
@@ -69,21 +73,30 @@ function PuzzleContainer({
     handleClearInitialBox();
   }
 
-  const PlayAgain = () => {
-    handlePlayAgain();
-    const updatedWordsList = updateWordsList(
-      game.wordsList,
-      initialBox,
-      completePuzzle
-    );
+  const handlePlayAgain = () => {
+    (async () => {
+      const response = await fetch(
+        `https://random-word-api.vercel.app/api?words=${totalWords}&length=${5}`
+      );
+      const data = await response.json();
 
-    updatedWordsList &&
-      setTimeout(() => {
-        dispatch({
-          type: "update_WordsList",
-          updatedWordsList: updatedWordsList,
-        });
-      }, 1500);
+      const wordsList = data.map(
+        eachWord =>
+          (eachWord = {
+            word: eachWord,
+            found: false,
+          })
+      );
+
+      generatePuzzle(data);
+
+      dispatch({
+        type: "update_WordsList",
+        updatedWordsList: wordsList,
+        rem: data.length,
+        total: data.length,
+      });
+    })();
   };
 
   return (
@@ -124,12 +137,82 @@ function PuzzleContainer({
               mobile: "500px",
               lg: "600px",
             },
-        padding: "3px 3px 3px 3px",
+        padding: "3px",
         boxShadow: "1px 1px 5px  black",
         borderRadius: "5px",
         backgroundColor: "primary.light",
+        position: "relative",
       }}
     >
+      {!game.counter.rem > 0 && (
+        <Box
+          sx={{
+            position: "absolute",
+            height: 1,
+            width: 1,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 10,
+            top: 0,
+            bottom: 0,
+            left: 0,
+            right: 0,
+
+            "&::before": {
+              content: "''",
+              backgroundColor: "primary.dark",
+              opacity: 0.5,
+              height: 1,
+              width: 1,
+              zIndex: -10,
+              top: 0,
+              bottom: 0,
+              left: 0,
+              right: 0,
+
+              position: "absolute",
+            },
+          }}
+        >
+          <Button
+            onClick={handlePlayAgain}
+            sx={{
+              // height: "100px",
+              // width: "fit-content",
+              fontSize: { xxs: "1rem", mobile: "1.25rem", md: "1.5rem" },
+              padding: "1rem 2rem",
+              borderRadius: "5px",
+              backgroundColor: "primary.dark",
+              color: "primary.color",
+
+              backgroundImage:
+                "url('https://www.transparenttextures.com/patterns/noise-lines.png')",
+              boxShadow: "1px 1px 2px  black",
+              "&:hover": {
+                backgroundColor: "primary.main",
+              },
+            }}
+          >
+            <Typography
+              sx={{
+                fontFamily: "'Sigmar', cursive",
+                textTransform: "capitalize",
+                height: 1,
+                width: 1,
+                fontSize: "1.5rem",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                color: "primary.color",
+              }}
+            >
+              Play Again?
+            </Typography>
+          </Button>
+        </Box>
+      )}
+
       {completePuzzle.map(row => (
         <Box sx={{ width: 1, display: "flex" }} key={uuidv4()}>
           {row.map(box => (

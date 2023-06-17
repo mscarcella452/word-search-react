@@ -48,6 +48,8 @@ function WordList({ wordListStylesProp }) {
         container
         sx={{
           ...flexBoxSx,
+          justifyContent: "flex-start",
+
           height: 1,
           width: 1,
         }}
@@ -58,8 +60,9 @@ function WordList({ wordListStylesProp }) {
             xxs={3}
             xs={4}
             sm={landscape.mobile ? 4 : landscape.duo ? 6 : 3}
-            md={landscape.mobile || portrait.ipad ? 4 : 4}
-            lg={4}
+            md={4}
+            // md={landscape.mobile || portrait.ipad ? 4 : 4}
+            lg={6}
             key={uuidv4()}
           >
             <Box

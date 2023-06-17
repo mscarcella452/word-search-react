@@ -163,6 +163,7 @@ export function updateWordsList(wordsList, initialBox, completePuzzle) {
       setTimeout(() => {
         boxes.map(box => (box.fail = false));
       }, 1000);
+      return false;
     } else
       setTimeout(() => {
         boxes.map(box => (box.locked = true));
