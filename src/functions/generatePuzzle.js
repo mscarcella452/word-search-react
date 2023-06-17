@@ -1,5 +1,4 @@
 import { directions, letters } from "../data";
-import { withinRange } from "./functionHelpers";
 
 // ------------------------------------
 // ------------------------------------
@@ -76,6 +75,7 @@ function isValidPosition(puzzleGrid, word, orientation) {
 // ------------------------------------
 // ------------------------------------
 function placeWords(grid, gridSize, words) {
+  let failed = [];
   for (const word of words) {
     let placed = false;
     let attempts = 0;
@@ -112,9 +112,19 @@ function placeWords(grid, gridSize, words) {
     }
 
     if (attempts >= maxAttempts) {
-      console.log(`Failed to place the word: ${word}`);
-      // return false;
+      failed.push(word);
     }
+  }
+
+  if (failed.length) {
+    const failedWords = failed.map(word =>
+      word.join().replace(/,/g, "").toLowerCase()
+    );
+    console.log(
+      `Failed to place: ${failedWords.join().replace(/,/g, ", ").toUpperCase()}`
+    );
+
+    return failedWords;
   }
 }
 
@@ -170,9 +180,9 @@ export function generatePuzzle(words, gridSize) {
     .fill(null)
     .map(() => Array(gridSize.cols).fill("."));
 
-  placeWords(puzzleGrid, gridSize, organizedWords);
+  const failedWords = placeWords(puzzleGrid, gridSize, organizedWords);
 
   const completePuzzle = addMissingLetters(puzzleGrid);
 
-  return completePuzzle;
+  return { completePuzzle, failedWords };
 }

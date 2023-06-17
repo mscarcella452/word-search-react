@@ -12,13 +12,9 @@ const ACTIONS = {
 const wordsReducer = (game, action) => {
   switch (action.type) {
     case ACTIONS.UPDATE_WORDSLIST:
-      console.log(action.updatedWordsList);
       return {
         wordsList: action.updatedWordsList,
-        counter: {
-          rem: action.rem ? action.rem : game.counter.rem - 1,
-          total: action.total ? action.total : game.counter.total,
-        },
+        remaining: action.remaining ? action.remaining : game.remaining - 1,
       };
 
     default:
@@ -26,16 +22,16 @@ const wordsReducer = (game, action) => {
   }
 };
 function WordSearchProvider({ words, children }) {
-  const wordsList = words.map(
-    eachWord =>
-      (eachWord = {
-        word: eachWord,
-        found: false,
-      })
-  );
+  // const wordsList = words.map(
+  //   eachWord =>
+  //     (eachWord = {
+  //       word: eachWord,
+  //       found: false,
+  //     })
+  // );
   const initialValue = {
-    wordsList: wordsList,
-    counter: { rem: words.length, total: words.length },
+    wordsList: words,
+    remaining: words.length,
   };
   const [game, gameDispatch] = useReducer(wordsReducer, initialValue);
 

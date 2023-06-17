@@ -1,11 +1,13 @@
 import { useState, useContext } from "react";
-import { Box, Button, Paper, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
+import { useToggle } from "../customHooks";
 import LetterBox from "./LetterBox";
 import {
   checkEligibile,
   selectBoxes,
   updateWordsList,
 } from "../functions/functionHelpers";
+import { fetchWordsAPI } from "../functions/fetchAPI";
 import { v4 as uuidv4 } from "uuid";
 import { dispatchContext, gameContext } from "../Context/WordSearchProvider";
 import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
@@ -15,18 +17,20 @@ function PuzzleContainer({
   completePuzzle,
   puzzleContainerStylesProp,
   generatePuzzle,
-  totalWords,
 }) {
   const game = useContext(gameContext);
   const dispatch = useContext(dispatchContext);
   const { landscape, portrait } = useContext(mediaContext);
   const [initialBox, setInitialBox] = useState();
   const [currentBox, setCurrentBox] = useState();
+  const [delay, toggleDelay] = useToggle(false);
+
+  const gameOver = !game.remaining > 0;
 
   const handleClickLetter = box => {
-    if (game.counter.rem > 0) {
-      !initialBox ? setInitialBox(box) : submitSelectedWord();
-    }
+    !gameOver && !initialBox
+      ? !delay && setInitialBox(box)
+      : submitSelectedWord();
   };
 
   const handleClearInitialBox = () => {
@@ -61,6 +65,8 @@ function PuzzleContainer({
       initialBox,
       completePuzzle
     );
+    toggleDelay();
+    setTimeout(toggleDelay, 1500);
 
     updatedWordsList &&
       setTimeout(() => {
@@ -75,12 +81,10 @@ function PuzzleContainer({
 
   const handlePlayAgain = () => {
     (async () => {
-      const response = await fetch(
-        `https://random-word-api.vercel.app/api?words=${totalWords}&length=${5}`
-      );
-      const data = await response.json();
+      const data = await fetchWordsAPI(game.wordsList.length);
 
-      const wordsList = data.map(
+      const newWords = generatePuzzle(data);
+      const wordsList = newWords.map(
         eachWord =>
           (eachWord = {
             word: eachWord,
@@ -88,13 +92,10 @@ function PuzzleContainer({
           })
       );
 
-      generatePuzzle(data);
-
       dispatch({
         type: "update_WordsList",
         updatedWordsList: wordsList,
-        rem: data.length,
-        total: data.length,
+        remaining: data.length,
       });
     })();
   };
@@ -104,7 +105,7 @@ function PuzzleContainer({
       onMouseLeave={handleClearInitialBox}
       container
       sx={{
-        overflow: "scroll",
+        overflow: !gameOver ? "scroll" : "hidden",
         height: landscape.phone
           ? 0.95
           : {
@@ -144,7 +145,7 @@ function PuzzleContainer({
         position: "relative",
       }}
     >
-      {!game.counter.rem > 0 && (
+      {gameOver && (
         <Box
           sx={{
             position: "absolute",

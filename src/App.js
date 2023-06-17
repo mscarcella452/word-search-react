@@ -4,52 +4,10 @@ import PuzzleContainer from "./components/PuzzleContainer";
 import { generatePuzzle } from "./functions/generatePuzzle";
 import WordSearchProvider from "./Context/WordSearchProvider";
 import WordList from "./components/WordList";
-import WordsCounter from "./components/WordsCounter";
 import StylesProvider from "./Context/StylesProvider";
 import { mediaContext } from "./Context/MediaContextProvider";
+import { fetchWordsAPI } from "./functions/fetchAPI";
 import "./App.css";
-
-async function fetchWords(total, length) {
-  const response = await fetch(
-    `https://random-word-api.vercel.app/api?words=${total}&length=${length}`
-  );
-
-  if (response.ok) {
-    // if HTTP-status is 200-299
-    // get the response body (the method explained below)
-    let words = await response.json();
-    return words;
-  } else {
-    alert("HTTP-Error: " + response.status);
-  }
-}
-// let wordsApi = await fetchWords(4, 5);
-// async function fetchApi() {
-//   let words1 = await fetchWords(4, 5);
-//   let words2 = await fetchWords(2, 3);
-//   let words3 = await fetchWords(3, 6);
-//   let words4 = await fetchWords(1, 8);
-
-//   const results = [...words1, ...words2, ...words3, ...words4];
-//   return results;
-// }
-
-const defaultWords = [
-  "javascript",
-  "react",
-  "html",
-  "css",
-  "sass",
-  "adobe",
-  "react",
-  "html",
-  "css",
-  "sass",
-  "adobe",
-  // "illustrator",
-  // "photoshop",
-  // "xd",
-];
 
 const defaultGridSize = { rows: 11, cols: 13 };
 
@@ -71,7 +29,7 @@ function App({
   customColors = defaultColors,
   gridSize = defaultGridSize,
   words = "",
-  totalWords = 1,
+  totalWords = 2,
 }) {
   const { landscape, ipad, portrait } = useContext(mediaContext);
 
@@ -80,44 +38,38 @@ function App({
 
   useEffect(() => {
     let loading = true;
+    let puzzleWords;
     (async () => {
-      const response = await fetch(
-        `https://random-word-api.vercel.app/api?words=${totalWords}&length=${5}`
-      );
-      const data = await response.json();
+      const data = await fetchWordsAPI(totalWords);
       if (loading) {
-        if (words === "") {
-          setWordsList(data);
-          handleSetPuzzle(data);
-        } else {
-          setWordsList(words);
-          handleSetPuzzle(words);
-        }
+        words === ""
+          ? (puzzleWords = handleSetPuzzle(data))
+          : (puzzleWords = handleSetPuzzle(words));
+
+        const list = puzzleWords.map(
+          eachWord =>
+            (eachWord = {
+              word: eachWord,
+              found: false,
+            })
+        );
+        setWordsList(list);
       }
     })();
 
     return () => (loading = false);
   }, []);
-  // const completePuzzle = generatePuzzle(words, gridSize);
-
-  // const handlePlayAgain = () => {
-  //   (async () => {
-  //     const response = await fetch(
-  //       `https://random-word-api.vercel.app/api?words=${totalWords}&length=${5}`
-  //     );
-  //     const data = await response.json();
-
-  //     let completePuzzle = generatePuzzle(data, gridSize);
-
-  //     setWordsList(data);
-
-  //     setPuzzle(completePuzzle);
-  //   })();
-  // };
 
   const handleSetPuzzle = data => {
-    let completePuzzle = generatePuzzle(data, gridSize);
-    setPuzzle(completePuzzle);
+    let puzzle = generatePuzzle(data, gridSize);
+    setPuzzle(puzzle.completePuzzle);
+
+    if (puzzle.failedWords) {
+      const filteredWords = data.filter(
+        word => !puzzle.failedWords.includes(word)
+      );
+      return filteredWords;
+    } else return data;
   };
 
   return (
@@ -165,10 +117,6 @@ function App({
                     },
               }}
             >
-              {/* <WordsCounter
-                generatePuzzle={handleSetPuzzle}
-                totalWords={totalWords}
-              /> */}
               <Typography
                 elevation={10}
                 sx={{
@@ -208,10 +156,8 @@ function App({
               }}
             >
               <PuzzleContainer
-                wordsList={wordsList}
                 completePuzzle={puzzle}
                 generatePuzzle={handleSetPuzzle}
-                totalWords={totalWords}
                 puzzleContainerStylesProp={puzzleContainerStyles}
               />
               <WordList wordListStylesProp={wordListStyles} />
