@@ -12,11 +12,11 @@ const media = {
   //   "(min-width:700px) and (max-width:800px) and (min-height:500px) and (max-height:640px)",
 
   mobileLandscape:
-    "(max-height:500px) and (min-height:351px) and (min-width:400px)",
+    "(max-height:500px) and (min-height:300px) and (min-width:400px)",
   galaxyLandscape: "(max-height:350px) and (min-width:500px)",
   ipadLandscape:
     "(min-width:1025px) and (min-height: 800px)and (max-height: 1000px)",
-  ipadPortrait: "(max-width:1000px) and (min-height: 1024px)",
+  ipadPortrait: "(max-width:1025px) and (min-height: 1024px)",
   duoLandscape:
     "(max-width:750px) and (max-height:550px) and (min-height: 501px)",
   // duoPortrait:

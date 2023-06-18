@@ -10,13 +10,19 @@ function WordList({ wordListStylesProp }) {
 
   const { ipad, landscape, portrait } = useContext(mediaContext);
 
+  const cols = {
+    xxs: 4,
+    xs: landscape.phone ? 6 : 4,
+    sm: landscape.mobile ? 4 : landscape.duo ? 6 : 3,
+    md: 6,
+    lg: 6,
+  };
+
   return (
     <Box
       sx={{
         ...flexBoxSx,
         ...wordListStylesProp,
-
-        height: 1,
         maxHeight: {
           xxs: landscape.phone || landscape.duo ? 1 : 0.4,
           md: 1,
@@ -33,15 +39,6 @@ function WordList({ wordListStylesProp }) {
           lg: 1,
         },
         overflow: "scroll",
-
-        // background: {
-        //   xxs: "blue",
-        //   xs: "purple",
-        //   mobile: "orange",
-        //   sm: "yellow",
-        //   md: "green",
-        //   lg: "white",
-        // },
       }}
     >
       <Grid
@@ -49,52 +46,66 @@ function WordList({ wordListStylesProp }) {
         sx={{
           ...flexBoxSx,
           justifyContent: "flex-start",
-
-          height: 1,
-          width: 1,
         }}
-        spacing={{ xxs: 0.75, sm: 1, md: 1.5 }}
+        spacing={{ xxs: 0.75, sm: landscape.phone ? 1 : 1.5 }}
       >
         {game.wordsList.map(word => (
           <Grid
-            xxs={3}
-            xs={4}
-            sm={landscape.mobile ? 4 : landscape.duo ? 6 : 3}
-            md={4}
-            // md={landscape.mobile || portrait.ipad ? 4 : 4}
-            lg={6}
+            xxs={cols.xxs}
+            xs={cols.xs}
+            sm={cols.sm}
+            md={cols.md}
+            lg={cols.lg}
             key={uuidv4()}
+            sx={{
+              maxHeight: ipad
+                ? "90px"
+                : { xxs: "45px", mobile: "50px", md: "70px" },
+              height: {
+                xxs: `${
+                  100 / Math.ceil(game.wordsList.length / (12 / cols.xxs))
+                }%`,
+                xs: `${
+                  100 / Math.ceil(game.wordsList.length / (12 / cols.xs))
+                }%`,
+                sm: `${
+                  100 / Math.ceil(game.wordsList.length / (12 / cols.sm))
+                }%`,
+                md: `${
+                  100 / Math.ceil(game.wordsList.length / (12 / cols.md))
+                }%`,
+                lg: `${
+                  100 / Math.ceil(game.wordsList.length / (12 / cols.lg))
+                }%`,
+              },
+            }}
           >
             <Box
               sx={{
-                ...flexBoxSx,
-                width: 1,
-                height: 1,
-                fontFamily: "'Kalam', cursive",
+                ...labelContainerSx,
                 fontSize: ipad
-                  ? "1.5rem"
+                  ? "1.8rem"
                   : {
                       xxs: ".8rem",
                       xs: landscape.mobile ? ".8rem" : "1rem",
                       mobile: "1.1rem",
                       sm: landscape.galaxy ? ".8rem" : "1.1rem",
                       md: landscape.mobile ? "1.1rem" : "1.25rem",
-                      lg: "1.35rem",
+                      lg: "1.5rem",
                     },
-                padding: ipad
-                  ? ".5rem"
-                  : landscape.mobile
-                  ? ".25rem"
-                  : { xxs: ".25rem", md: ".35rem" },
-
-                textTransform: "capitalize",
-                border: ".5px solid",
-                borderRadius: "5px",
-                boxShadow: "1px 1px 2px black",
-                ...(word.found ? foundWordSx : defaultWordSx),
+                borderRadius: ipad ? "10px" : "5px",
+                ...(word.found && foundWordSx),
               }}
             >
-              {word.word}
+              <Box
+                sx={{
+                  ...labelSx,
+                  borderRadius: ipad ? "10px" : "5px",
+                  ...(word.found && foundWordSx),
+                }}
+              >
+                {word.word}
+              </Box>
             </Box>
           </Grid>
         ))}
@@ -109,21 +120,31 @@ const flexBoxSx = {
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
+  width: 1,
+  height: 1,
+};
+
+const labelSx = {
+  ...flexBoxSx,
+  fontFamily: "'Lalezar', cursive",
+  // fontFamily: "'Kalam', cursive",
+  textTransform: "capitalize",
+  boxShadow: "1px 1px 2px inset black",
+  backgroundImage:
+    "url('https://www.transparenttextures.com/patterns/noise-lines.png')",
+  color: "primary.color",
 };
 
 const foundWordSx = {
-  borderColor: "foundWord.main",
   backgroundColor: "foundWord.main",
   color: "foundWord.color",
-  fontWeight: "bold",
-  backgroundImage:
-    "url('https://www.transparenttextures.com/patterns/noise-lines.png')",
+  borderColor: { xxs: "foundWord.main", mobile: "foundWord.main" },
 };
-const defaultWordSx = {
-  borderColor: "black",
-  backgroundColor: "primary.color",
-  color: "black",
-  fontWeight: "none",
-  backgroundImage:
-    "url('https://www.transparenttextures.com/patterns/lined-paper-2.png')",
+
+const labelContainerSx = {
+  ...flexBoxSx,
+  border: { xxs: ".5px solid", mobile: "2px solid" },
+  boxShadow: "1px 1px 2px black",
+  borderColor: { xxs: "primary.light", mobile: "primary.light" },
+  backgroundColor: "primary.main",
 };

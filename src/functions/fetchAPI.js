@@ -46,7 +46,7 @@ export async function fetchWordsAPI(totalWords) {
     if (i === 0) {
       word = await fetchSingleWord(8, i, list);
     } else if (i === 1) {
-      word = await fetchSingleWord(3, i, list);
+      word = await fetchSingleWord(7, i, list);
     } else {
       let random = Math.floor(Math.random() * lengthOptions.length);
       word = await fetchSingleWord(lengthOptions[random], i, list);

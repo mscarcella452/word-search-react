@@ -1,6 +1,5 @@
 import { useState, useContext } from "react";
 import { Box, Button, Typography } from "@mui/material";
-import { useToggle } from "../customHooks";
 import LetterBox from "./LetterBox";
 import {
   checkEligibile,
@@ -20,10 +19,10 @@ function PuzzleContainer({
 }) {
   const game = useContext(gameContext);
   const dispatch = useContext(dispatchContext);
-  const { landscape, portrait } = useContext(mediaContext);
+  const { landscape, portrait, ipad } = useContext(mediaContext);
   const [initialBox, setInitialBox] = useState();
   const [currentBox, setCurrentBox] = useState();
-  const [delay, toggleDelay] = useToggle(false);
+  const [delay, setDelay] = useState(false);
 
   const gameOver = !game.remaining > 0;
 
@@ -65,16 +64,17 @@ function PuzzleContainer({
       initialBox,
       completePuzzle
     );
-    toggleDelay();
-    setTimeout(toggleDelay, 1500);
+    // set debounce delay for setting initial box
+    setDelay(true);
 
-    updatedWordsList &&
-      setTimeout(() => {
+    setTimeout(() => {
+      setDelay(false);
+      updatedWordsList &&
         dispatch({
           type: "update_WordsList",
           updatedWordsList: updatedWordsList,
         });
-      }, 1500);
+    }, 1500);
 
     handleClearInitialBox();
   }
@@ -183,9 +183,8 @@ function PuzzleContainer({
               // width: "fit-content",
               fontSize: { xxs: "1rem", mobile: "1.25rem", md: "1.5rem" },
               padding: "1rem 2rem",
-              borderRadius: "5px",
+              borderRadius: ipad ? "10px" : "5px",
               backgroundColor: "primary.dark",
-              color: "primary.color",
 
               backgroundImage:
                 "url('https://www.transparenttextures.com/patterns/noise-lines.png')",
@@ -205,7 +204,7 @@ function PuzzleContainer({
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
-                color: "primary.color",
+                color: "#F7C04A",
               }}
             >
               Play Again?

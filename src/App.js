@@ -1,26 +1,19 @@
 import { useState, useEffect, useContext } from "react";
-import { Box, Typography } from "@mui/material";
-import PuzzleContainer from "./components/PuzzleContainer";
-import { generatePuzzle } from "./functions/generatePuzzle";
-import WordSearchProvider from "./Context/WordSearchProvider";
-import WordList from "./components/WordList";
+// materiul ui
+import { Box } from "@mui/material";
+// context
 import StylesProvider from "./Context/StylesProvider";
 import { mediaContext } from "./Context/MediaContextProvider";
+// functions
+import { generatePuzzle } from "./functions/generatePuzzle";
 import { fetchWordsAPI } from "./functions/fetchAPI";
-import "./App.css";
-
-const defaultGridSize = { rows: 11, cols: 13 };
-
-const defaultColors = {
-  primary: {
-    background: "#3F497F",
-    color: "#fff",
-    hoverBackground: "transparent",
-    borderColor: "#3F497F",
-  },
-  foundWord: { background: "#539165", color: "#fff" },
-  fail: { background: "#EB5353", color: "#fff" },
-};
+// data
+import { defaultColors, defaultGridSize } from "./data";
+// components
+import PuzzleContainer from "./components/PuzzleContainer";
+import WordSearchProvider from "./Context/WordSearchProvider";
+import WordList from "./components/WordList";
+import Title from "./components/Title";
 
 function App({
   letterBoxStyles = "",
@@ -29,7 +22,7 @@ function App({
   customColors = defaultColors,
   gridSize = defaultGridSize,
   words = "",
-  totalWords = 2,
+  totalWords = 12,
 }) {
   const { landscape, ipad, portrait } = useContext(mediaContext);
 
@@ -82,7 +75,7 @@ function App({
           ...appSx,
           padding: {
             xxs: "1rem",
-            xs: "1rem",
+            // xs: "1rem",
             mobile: "1.25rem",
             sm: landscape.galaxy
               ? ".5rem"
@@ -103,46 +96,7 @@ function App({
       >
         {wordsList && (
           <WordSearchProvider words={wordsList}>
-            <Box
-              sx={{
-                position: "relative",
-                width: 1,
-                height: ipad
-                  ? "60px"
-                  : {
-                      xxs: "35px",
-                      xs: landscape.mobile ? "30px" : "40px",
-                      mobile: "40px",
-                      sm: landscape.galaxy ? "25px" : "45px",
-                    },
-              }}
-            >
-              <Typography
-                elevation={10}
-                sx={{
-                  ...titleSx,
-
-                  fontSize: ipad
-                    ? "3rem"
-                    : {
-                        xxs: "1.15rem",
-                        xs: landscape.mobile ? "1.15rem" : "1.5rem",
-                        sm: landscape.galaxy ? "1.15rem" : "1.5rem",
-                        md: landscape.mobile ? "1.5rem" : "2rem",
-                      },
-                  // background: {
-                  //   xxs: "blue",
-                  //   xs: "purple",
-                  //   mobile: "orange",
-                  //   sm: "yellow",
-                  //   md: "green",
-                  //   lg: "transparent",
-                  // },
-                }}
-              >
-                -- Word Search --
-              </Typography>
-            </Box>
+            <Title />
             <Box
               sx={{
                 ...containerSx,
@@ -160,6 +114,7 @@ function App({
                 generatePuzzle={handleSetPuzzle}
                 puzzleContainerStylesProp={puzzleContainerStyles}
               />
+
               <WordList wordListStylesProp={wordListStyles} />
             </Box>
           </WordSearchProvider>
@@ -196,11 +151,5 @@ const containerSx = {
   width: 1,
   height: 1,
   gap: { xxs: ".5rem", mobile: "1rem", md: "none" },
-};
-
-const titleSx = {
-  ...flexBoxSx,
-  width: 1,
-  fontFamily: "'Sigmar', cursive",
-  color: "primary.color",
+  overflow: "hidden",
 };

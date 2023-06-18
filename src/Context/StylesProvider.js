@@ -36,9 +36,13 @@ function StylesProvider({ letterBoxStyles, customColors, children }) {
   const theme = createTheme({
     palette: {
       primary: {
-        main: customColors.primary.background,
+        main: customColors.primary.main,
         color: customColors.primary.color,
-        borderColor: customColors.primary.borderColor,
+        hoverBackground: customColors.primary.hoverBackground,
+      },
+      secondary: {
+        main: customColors.secondary.main,
+        color: customColors.secondary.color,
         hoverBackground: customColors.primary.hoverBackground,
       },
 

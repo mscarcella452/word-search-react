@@ -37,3 +37,19 @@ export const letters = [
   "Y",
   "Z",
 ];
+
+export const defaultGridSize = { rows: 11, cols: 13 };
+
+export const defaultColors = {
+  primary: {
+    main: "#3F497F",
+    color: "#fff",
+    hoverBackground: "transparent",
+  },
+  secondary: {
+    main: "#F7C04A",
+    color: "#333",
+  },
+  foundWord: { background: "#539165", color: "#fff" },
+  fail: { background: "#EB5353", color: "#fff" },
+};
