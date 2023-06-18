@@ -1,5 +1,7 @@
 import { useContext } from "react";
+// material ui
 import { Box, Typography } from "@mui/material";
+// context
 import { mediaContext } from "../Context/MediaContextProvider";
 
 function Title() {
@@ -18,7 +20,7 @@ function Title() {
     <Box
       sx={{
         ...flexBoxSx,
-        width: 1,
+        gap: "1rem",
         justifyContent: landscape.phone
           ? "flex-start"
           : {
@@ -27,13 +29,12 @@ function Title() {
               md: portrait.ipad ? "space-around" : "flex-start",
             },
         height: titleAspectRatio,
-        gap: "1rem",
         // background: {
         //   xxs: "blue",
         //   xs: "purple",
         //   mobile: "orange",
         //   sm: "yellow",
-        //   md: portrait.ipad ? "teal" : "green",
+        //   md: "green",
         //   lg: "red",
         // },
       }}
@@ -85,6 +86,8 @@ const flexBoxSx = {
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
+  width: 1,
+  height: 1,
 };
 
 const titleSx = {

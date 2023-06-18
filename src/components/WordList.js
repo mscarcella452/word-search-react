@@ -1,13 +1,14 @@
 import { useContext } from "react";
-import { Box } from "@mui/material";
-import { gameContext } from "../Context/WordSearchProvider";
 import { v4 as uuidv4 } from "uuid";
+// material ui
+import { Box } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
+// context
+import { gameContext } from "../Context/WordSearchProvider";
 import { mediaContext } from "../Context/MediaContextProvider";
 
 function WordList({ wordListStylesProp }) {
   const game = useContext(gameContext);
-
   const { ipad, landscape, portrait } = useContext(mediaContext);
 
   const cols = {
@@ -62,6 +63,7 @@ function WordList({ wordListStylesProp }) {
                 ? "90px"
                 : { xxs: "45px", mobile: "50px", md: "70px" },
               height: {
+                // height = 100%  divided by ( totalWords / # of columns)
                 xxs: `${
                   100 / Math.ceil(game.wordsList.length / (12 / cols.xxs))
                 }%`,

@@ -22,13 +22,16 @@ function App({
   customColors = defaultColors,
   gridSize = defaultGridSize,
   words = "",
-  totalWords = 12,
+  totalWords = 1,
 }) {
+  // context
   const { landscape, ipad, portrait } = useContext(mediaContext);
-
+  // state
   const [puzzle, setPuzzle] = useState();
   const [wordsList, setWordsList] = useState();
-
+  // ---------------------------------------
+  // USE EFFECT: on start --> fetch words from api if custom words prop isnt passed
+  // ---------------------------------------
   useEffect(() => {
     let loading = true;
     let puzzleWords;
@@ -49,15 +52,18 @@ function App({
         setWordsList(list);
       }
     })();
-
+    // clear fetch use effect to prevent race conditions
     return () => (loading = false);
   }, []);
-
+  // ---------------------------------------
+  // HANDLE FUNCITONS
+  // ---------------------------------------
   const handleSetPuzzle = data => {
     let puzzle = generatePuzzle(data, gridSize);
     setPuzzle(puzzle.completePuzzle);
 
     if (puzzle.failedWords) {
+      // any words that didnt fit in the grid are removed and don't appear in wordslist component render
       const filteredWords = data.filter(
         word => !puzzle.failedWords.includes(word)
       );

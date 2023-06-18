@@ -15,7 +15,7 @@ const media = {
     "(max-height:500px) and (min-height:300px) and (min-width:400px)",
   galaxyLandscape: "(max-height:350px) and (min-width:500px)",
   ipadLandscape:
-    "(min-width:1025px) and (min-height: 800px)and (max-height: 1000px)",
+    "(min-width:1024px) and (min-height: 800px)and (max-height: 1025px)",
   ipadPortrait: "(max-width:1025px) and (min-height: 1024px)",
   duoLandscape:
     "(max-width:750px) and (max-height:550px) and (min-height: 501px)",

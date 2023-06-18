@@ -1,5 +1,7 @@
 import { useContext } from "react";
+// material ui
 import { Box } from "@mui/material";
+// context
 import { letterBoxContext } from "../Context/StylesProvider";
 import { mediaContext } from "../Context/MediaContextProvider";
 
@@ -56,10 +58,7 @@ const keyFramesSx = {
   default: {
     backgroundImage:
       "url('https://www.transparenttextures.com/patterns/noise-lines.png')",
-    // fontWeight: "bold",
     color: "white",
-    // border: "2px solid transparent",
-    // borderRadius: "50%",
     zIndex: 10,
     backgroundColor: "transparent",
   },
