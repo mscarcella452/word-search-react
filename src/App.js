@@ -1,34 +1,31 @@
 import { useState, useEffect, useContext } from "react";
 // materiul ui
 import { Box } from "@mui/material";
+import { ThemeProvider } from "@mui/material/styles";
+import { wordSearchTheme } from "./Styles/Theme";
 // context
-import StylesProvider from "./Context/StylesProvider";
 import { mediaContext } from "./Context/MediaContextProvider";
 // functions
 import { generatePuzzle } from "./functions/generatePuzzle";
 import { fetchWordsAPI } from "./functions/fetchAPI";
 // data
-import { defaultColors, defaultGridSize } from "./data";
+import { defaultGridSize } from "./data";
 // components
 import PuzzleContainer from "./components/PuzzleContainer";
 import WordSearchProvider from "./Context/WordSearchProvider";
 import WordList from "./components/WordList";
 import Title from "./components/Title";
 
-function App({
-  letterBoxStyles = "",
-  puzzleContainerStyles = "",
-  wordListStyles = "",
-  customColors = defaultColors,
-  gridSize = defaultGridSize,
-  words = "",
-  totalWords = 1,
-}) {
+const mobileLandscape =
+  "(max-height:500px) and (min-height:300px) and (min-width:400px)";
+
+function App({ gridSize = defaultGridSize, words = "", totalWords = 12 }) {
   // context
   const { landscape, ipad, portrait } = useContext(mediaContext);
   // state
   const [puzzle, setPuzzle] = useState();
   const [wordsList, setWordsList] = useState();
+
   // ---------------------------------------
   // USE EFFECT: on start --> fetch words from api if custom words prop isnt passed
   // ---------------------------------------
@@ -72,10 +69,7 @@ function App({
   };
 
   return (
-    <StylesProvider
-      letterBoxStyles={letterBoxStyles}
-      customColors={customColors}
-    >
+    <ThemeProvider theme={wordSearchTheme}>
       <Box
         sx={{
           ...appSx,
@@ -118,15 +112,14 @@ function App({
               <PuzzleContainer
                 completePuzzle={puzzle}
                 generatePuzzle={handleSetPuzzle}
-                puzzleContainerStylesProp={puzzleContainerStyles}
               />
 
-              <WordList wordListStylesProp={wordListStyles} />
+              <WordList />
             </Box>
           </WordSearchProvider>
         )}
       </Box>
-    </StylesProvider>
+    </ThemeProvider>
   );
 }
 

@@ -1,4 +1,4 @@
-export const defaultLetterBoxSx = {
+export const defaultletterLetterBoxSx = {
   unselectedBoxes: {
     width: 1,
     height: 1,
@@ -25,7 +25,7 @@ export const defaultLetterBoxSx = {
 
   highlightedBoxes: {
     color: "primary.color",
-    backgroundColor: "primary.hoverBackground",
+    backgroundColor: "primary.dark",
     backgroundImage:
       "url('https://www.transparenttextures.com/patterns/noise-lines.png')",
   },

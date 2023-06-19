@@ -1,5 +1,5 @@
 import { useReducer, createContext } from "react";
-import StylesProvider from "./StylesProvider";
+import StylesProvider from "../Styles/Theme";
 
 export const gameContext = createContext();
 export const dispatchContext = createContext();

@@ -2,11 +2,9 @@ import { useContext } from "react";
 // material ui
 import { Box } from "@mui/material";
 // context
-import { letterBoxContext } from "../Context/StylesProvider";
 import { mediaContext } from "../Context/MediaContextProvider";
 
 function LetterBox({ box, clickLetter, highlightBoxes, initialBox }) {
-  const letterBoxSx = useContext(letterBoxContext);
   const { landscape, ipad } = useContext(mediaContext);
 
   const handleMouseOver = () => highlightBoxes(box);
@@ -24,6 +22,17 @@ function LetterBox({ box, clickLetter, highlightBoxes, initialBox }) {
         "&:hover": {
           ...(!initialBox && letterBoxSx.highlightedBoxes),
         },
+
+        fontSize: ipad
+          ? "1.5rem"
+          : {
+              xxs: ".7rem",
+              xs: "1rem",
+              mobile: "1.15rem",
+              sm: landscape.galaxy ? ".8rem" : "1.15rem",
+              md: "1.25rem",
+              lg: "1.45rem",
+            },
 
         fontSize: ipad
           ? "1.5rem"
@@ -70,6 +79,7 @@ const keyFramesSx = {
     end: "translate(0)",
   },
 };
+export default LetterBox;
 
 function animationSx(background, fontColor) {
   return {
@@ -99,4 +109,35 @@ function animationSx(background, fontColor) {
   };
 }
 
-export default LetterBox;
+const letterBoxSx = {
+  unselectedBoxes: {
+    width: 1,
+    height: 1,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    boxShadow: ".5px -.5px 2px inset black",
+    borderRadius: "2.5px",
+    cursor: "pointer",
+    color: "primary.color",
+    backgroundColor: "primary.main",
+    backgroundImage:
+      "url('https://www.transparenttextures.com/patterns/noise-lines.png')",
+    fontFamily: "'Lalezar', cursive",
+    textTransform: "lowercase",
+  },
+
+  foundBoxes: {
+    color: "foundWord.color",
+    backgroundImage:
+      "url('https://www.transparenttextures.com/patterns/noise-lines.png')",
+    backgroundColor: "foundWord.main",
+  },
+
+  highlightedBoxes: {
+    color: "primary.color",
+    backgroundColor: "primary.dark",
+    backgroundImage:
+      "url('https://www.transparenttextures.com/patterns/noise-lines.png')",
+  },
+};

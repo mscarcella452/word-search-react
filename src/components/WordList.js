@@ -132,6 +132,7 @@ const labelSx = {
   // fontFamily: "'Kalam', cursive",
   textTransform: "capitalize",
   boxShadow: "1px 1px 2px inset black",
+
   backgroundImage:
     "url('https://www.transparenttextures.com/patterns/noise-lines.png')",
   color: "primary.color",

@@ -6,19 +6,7 @@ import reportWebVitals from "./reportWebVitals";
 import MediaContextProvider from "./Context/MediaContextProvider";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
-const betaProps = [
-  "baloney",
-  "hike",
-  "fallen",
-  "booty",
-  "soap",
-  "capper",
-  "civic",
-  "hi",
-  // "illustrator",
-  // "photoshop",
-  // "xd",
-];
+
 root.render(
   <React.StrictMode>
     <MediaContextProvider>
